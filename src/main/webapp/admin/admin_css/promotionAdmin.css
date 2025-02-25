@@ -1,0 +1,173 @@
+/* Container chính */
+.discount-container {
+    width: 100%;
+    max-width: 400px;  /* Giới hạn chiều rộng tối đa */
+    margin: 30px 0; /* Canh giữa và tạo khoảng cách trên và dưới */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Tiêu đề chính */
+.discount-container h2 {
+    text-align: center;
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Mô tả phần Quản lý */
+.discount-container p {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+/* Khu vực thêm phiếu giảm giá */
+#add-discount-area {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Tiêu đề khu vực thêm phiếu giảm giá */
+#add-discount-area h3 {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Các nhóm form */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Label của các input */
+.form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Các input và textarea */
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
+
+/* Nút thêm phiếu giảm giá */
+#add-discount-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    background-color: #ffcc00;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#add-discount-btn:hover {
+    background-color: #e6b800;
+}
+
+#add-discount-btn:focus {
+    outline: none;
+}
+
+/* Responsive - Điều chỉnh kích thước trên các màn hình nhỏ */
+@media (max-width: 600px) {
+    .discount-container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    #add-discount-area {
+        padding: 15px;
+    }
+
+    #add-discount-btn {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+
+/* Container chính */
+#add-promotion-area, #add-product-to-promotion-area {
+    width: 100%;
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Tiêu đề */
+h3 {
+    text-align: center;
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Các nhóm form */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Label của các input */
+.form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Các input và textarea */
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
+
+/* Nút thêm */
+#add-promotion-btn, #add-product-to-promotion-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #ffcc00;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#add-promotion-btn:hover, #add-product-to-promotion-btn:hover {
+    background-color: #e6b800;
+}
+
+#add-promotion-btn:focus, #add-product-to-promotion-btn:focus {
+    outline: none;
+}
+
+.add-super-sale {
+    display: flex;
+    gap: 50px;
+}

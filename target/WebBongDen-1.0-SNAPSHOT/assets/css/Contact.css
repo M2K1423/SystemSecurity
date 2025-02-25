@@ -1,0 +1,118 @@
+
+
+.main .breadcrumb {
+    font-size: 16px;
+    color: #000;
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+.main .breadcrumb a {
+    text-decoration: none;
+    color: #000;
+}
+
+.main .breadcrumb a:hover {
+    color: red;
+}
+.main .breadcrumb .separator {
+    margin: 0 5px;
+}
+
+.contact-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    width: 1240px;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+}
+
+.tab {
+    padding: 10px 15px;
+    background-color: #f9f9f9;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    font-weight: bold;
+    color: #333;
+    border-right: 1px solid #ddd;
+    transition: background-color 0.3s ease;
+}
+
+.tab:hover,
+.tab.active {
+    background-color: #ffd700;
+}
+
+.map {
+    display: none;
+    padding-top: 10px;
+}
+
+.map.active {
+    display: block;
+}
+
+
+.left-section {
+    width: 50%;
+}
+
+.right-section {
+    width: 50%;
+}
+
+
+.right-section h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.hotline {
+    
+    color: #fe0000;
+    font-weight: bold;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.contact-form textarea {
+    resize: none;
+    height: 80px;
+}
+
+.contact-form button {
+    padding: 10px;
+    background-color: #ffd700;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.contact-form button:hover {
+    background-color: #333;
+    color: #fff;
+}

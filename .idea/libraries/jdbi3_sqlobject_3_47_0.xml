@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jdbi3-sqlobject-3.47.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../jdbi3-sqlobject-3.47.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
