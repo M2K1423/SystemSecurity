@@ -67,7 +67,7 @@
     <div class="tmp">
         <div class="container">
             <div class="footer-bottom">
-                <a href="/WebBongDen_war/home" class="logo">
+                <a href="/SystemSecurity_war/home" class="logo">
                     <img src="./assets/img/logo2.png" alt="Description">
                 </a>
                 <div class="social-media">

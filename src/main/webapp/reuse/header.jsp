@@ -18,12 +18,12 @@
             <!-- Hamburger icon for opening sidebar -->
             <div style="display: flex; align-items: center">
                 <i class="fa-solid fa-bars" id="menu-toggle"></i>
-                <a href="/WebBongDen_war/home" class="logo">
+                <a href="/SystemSecurity_war/home" class="logo">
                     <img src="./assets/img/logo2.png" alt="Description">
                 </a>
             </div>
             <div class="search-bar">
-                <form action="/WebBongDen_war/search" method="GET" id="search-form">
+                <form action="/SystemSecurity_war/search" method="GET" id="search-form">
                     <input placeholder="Bạn cần tìm gì?" type="text" name="value" />
                     <button type="submit" aria-label="Search" class="search-btn">
                         <i class="fas fa-search"></i>
@@ -59,7 +59,7 @@
                     <span>Hỗ trợ</span>
                 </a>
 
-                <a class="info-item" href="/WebBongDen_war/cart">
+                <a class="info-item" href="/SystemSecurity_war/cart">
                     <i class="fas fa-shopping-cart"></i>
                     <span>Giỏ hàng</span>
                     <p>(<span class="quantity-product"><%= totalQuantity %></span>)</p>
@@ -83,24 +83,24 @@
                         <div class="dropdown-content">
                             <div class="dropdown-item">
                                 <i class="fa fa-user"></i>
-                                <a href="/WebBongDen_war/userinfo">Thông tin cá nhân</a>
+                                <a href="/SystemSecurity_war/userinfo">Thông tin cá nhân</a>
                             </div>
 
                             <div class="dropdown-item">
                                 <i class="fa-regular fa-eye"></i>
-                                <a href="/WebBongDen_war/userinfo">Đơn hàng gần đây</a>
+                                <a href="/SystemSecurity_war/userinfo">Đơn hàng gần đây</a>
                             </div>
                         </div>
                         <div class="dropdown-footer">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                            <a href="/WebBongDen_war/LogoutController">Đăng xuất</a>
+                            <a href="/SystemSecurity_war/LogoutController">Đăng xuất</a>
                         </div>
                     </div>
                 </div>
                 <%
                 } else { // Người dùng chưa đăng nhập
                 %>
-                <a href="/WebBongDen_war/login" id="login-header-btn" style="display: block">
+                <a href="/SystemSecurity_war/login" id="login-header-btn" style="display: block">
                     <button class="login" id="login-btn">
                         <i class="fas fa-user"></i>
                         <span>Đăng nhập</span>
@@ -115,9 +115,9 @@
 
     <nav class="navbar">
         <ul class="navbar-list">
-            <li><a href="/WebBongDen_war/home">TRANG CHỦ</a></li>
+            <li><a href="/SystemSecurity_war/home">TRANG CHỦ</a></li>
             <li class="dropdown">
-                <a href="/WebBongDen_war/CategoryController"
+                <a href="/SystemSecurity_war/CategoryController"
                 >DANH MỤC
                     <i class="fa-solid fa-caret-down"></i>
                 </a>
@@ -130,7 +130,7 @@
                                     <!-- Hiển thị danh mục con -->
                                     <c:forEach var="subCategory" items="${subCategoriesMap[category.id]}">
                                         <li class="category-item">
-                                            <a href="/WebBongDen_war/CategoryController?categoryId=${category.id}&subCategoryId=${subCategory.id}" class="category-link">${subCategory.name}</a>
+                                            <a href="/SystemSecurity_war/CategoryController?categoryId=${category.id}&subCategoryId=${subCategory.id}" class="category-link">${subCategory.name}</a>
                                         </li>
                                     </c:forEach>
                                 </ul>

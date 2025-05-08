@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
-    <artifactId>WebBongDen</artifactId>
+    <artifactId>SystemSecurity</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>WebBongDen</name>
+    <name>SystemSecurity</name>
     <packaging>war</packaging>
 
     <properties>

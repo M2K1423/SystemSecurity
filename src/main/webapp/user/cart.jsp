@@ -86,7 +86,7 @@
 <div class="wrapper">
     <jsp:include page="../reuse/header.jsp" />
     <div class="main">
-        <a class="direction" style="margin: 20px 140px; display: block; text-decoration: none; color: black;" href="/WebBongDen_war/home">
+        <a class="direction" style="margin: 20px 140px; display: block; text-decoration: none; color: black;" href="/SystemSecurity_war/home">
             <i class="fa-solid fa-arrow-left"></i>
             <span id="direction-cart">Mua thêm sản phẩm</span>
         </a>
@@ -102,9 +102,9 @@
                 <div class="container-top">
                     <% if (cart == null || cart.getItems().isEmpty()) { %>
                     <div class="empty-cart">
-                        <img src="/WebBongDen_war/assets/img/empty-cart.png" alt="Giỏ hàng trống" class="empty-cart-image">
+                        <img src="/SystemSecurity_war/assets/img/empty-cart.png" alt="Giỏ hàng trống" class="empty-cart-image">
                         <p>Giỏ hàng của bạn trống.</p>
-                        <a href="/WebBongDen_war/home">
+                        <a href="/SystemSecurity_war/home">
                             <button class="back-to-shopping-btn">Quay lại mua hàng</button>
                         </a>
                     </div>
@@ -141,7 +141,7 @@
                                         </p>
                                     </div>
                                     <div class="quantity-selector">
-                                        <form action="/WebBongDen_war/update-cart" method="post">
+                                        <form action="/SystemSecurity_war/update-cart" method="post">
                                             <input type="hidden" name="productId" value="<%= item.getProductId() %>" />
                                             <button class="quantity-btn decrease" type="button" onclick="updateQuantity(this, -1)">-</button>
                                             <input
@@ -174,7 +174,7 @@
                             <p class="total-price"><%= cart.getTotalPrice() %> VND</p>
                         </div>
                     </div>
-                    <a href="/WebBongDen_war/cart#cus-info">
+                    <a href="/SystemSecurity_war/cart#cus-info">
                         <button class="buy-btn" data-tab="cus-info">ĐẶT HÀNG NGAY</button>
                     </a>
                 </div>
@@ -282,7 +282,7 @@
                     </div>
                 </form>
             </div>
-            <form method="POST" action="/WebBongDen_war/PayCartController" id="payment-form">
+            <form method="POST" action="/SystemSecurity_war/PayCartController" id="payment-form">
                 <div class="tab-content" id="payment" style="<%= (cus == null) ? "display: none;" : "" %>">
                     <div class="container-top">
                         <div class="section order-info">

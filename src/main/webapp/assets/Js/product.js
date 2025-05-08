@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const productId = parseInt(buyBtn.dataset.id, 10); // Sử dụng parseInt (cơ số 10)
 
         // Gửi request đến server
-        fetch('/WebBongDen_war/add-to-cart', {
+        fetch('/SystemSecurity_war/add-to-cart', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Gửi dữ liệu qua Fetch
-    fetch("/WebBongDen_war/review", {
+    fetch("/SystemSecurity_war/review", {
       method: "POST",
       headers: {
         "Content-Type": "application/json", // Đặt header là JSON
