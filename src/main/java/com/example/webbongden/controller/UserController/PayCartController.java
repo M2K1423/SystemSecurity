@@ -86,7 +86,7 @@ public class PayCartController extends HttpServlet {
             session.removeAttribute("cart");
 
             // Điều hướng tới trang hoàn tất
-            response.sendRedirect("/WebBongDen_war/cart#finish");
+            response.sendRedirect("/SystemSecurity_war/cart#finish");
         } catch (Exception e) {
             e.printStackTrace();
             // Xử lý lỗi và quay lại trang giỏ hàng

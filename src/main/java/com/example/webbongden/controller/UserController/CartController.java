@@ -24,7 +24,7 @@ public class CartController extends HttpServlet {
         Account account = (Account) session.getAttribute("account");
         if (account == null) {
             // Nếu không có thông tin Account trong session, chuyển hướng đến trang đăng nhập
-            response.sendRedirect("/WebBongDen_war/login");
+            response.sendRedirect("/SystemSecurity_war/login");
             return;
         }
 

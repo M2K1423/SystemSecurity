@@ -43,6 +43,6 @@ public class SaveCusInfoController extends HttpServlet {
         session.setAttribute("customerInfo", customerInfo);
 
         // Quay lại trang cart.jsp và hiển thị Tab 3 (Thanh toán)
-        response.sendRedirect("/WebBongDen_war/cart#payment");
+        response.sendRedirect("/SystemSecurity_war/cart#payment");
     }
 }

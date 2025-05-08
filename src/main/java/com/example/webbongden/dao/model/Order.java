@@ -17,9 +17,26 @@ public class Order {
     private String shippingMethod;
     private int accountId;
     private String note;
+    private String digitalSignature;
+    private String digitalCert;
 
     // Constructors
-    public Order() {}
+    public Order() {
+    }
+
+    public Order(int id, String customerName, Date createdAt, double totalPrice,
+                 String address, String orderStatus, List<OrderDetail> orderDetails,
+                 String digitalSignature, String digitalCert) {
+        this.id = id;
+        this.customerName = customerName;
+        this.createdAt = createdAt;
+        this.totalPrice = totalPrice;
+        this.address = address;
+        this.orderStatus = orderStatus;
+        this.orderDetails = orderDetails;
+        this.digitalSignature = digitalSignature;
+        this.digitalCert = digitalCert;
+    }
 
     public Order(int id, String customerName, java.util.Date createdAt, String orderStatus) {
         this.id = id;
@@ -136,5 +153,20 @@ public class Order {
         return sdf.format(this.createdAt);
     }
 
-}
 
+    public String getDigitalSignature() {
+        return digitalSignature;
+    }
+
+    public void setDigitalSignature(String digitalSignature) {
+        this.digitalSignature = digitalSignature;
+    }
+
+    public String getDigitalCert() {
+        return digitalCert;
+    }
+
+    public void setDigitalCert(String digitalCert) {
+        this.digitalCert = digitalCert;
+    }
+}

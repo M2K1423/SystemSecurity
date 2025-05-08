@@ -25,7 +25,7 @@ public class DeleteItemController extends HttpServlet {
         }
 
         // Chuyển hướng về trang giỏ hàng
-        response.sendRedirect("/WebBongDen_war/cart");
+        response.sendRedirect("/SystemSecurity_war/cart");
     }
 
     @Override
