@@ -1,0 +1,206 @@
+/* Code header */
+.wrapper .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid #f1f3f5;
+    top: 0;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    height: 66px;
+    z-index: 1000;
+    background-color: #fff;
+}
+
+.wrapper .header-right {
+    gap: 20px;
+    position: relative;
+}
+
+.wrapper .header-right .noti-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    cursor: pointer;
+}
+
+.wrapper .header-right .noti-icon:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.notification-container  {
+    width: 400px;
+    height: 470px;
+    position: absolute;
+    z-index: 10000000;
+    right: 75px;
+    top: 65px;
+    transform: translateY(-10px);
+    background-color: #fff;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.notification-container .noti-content {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.notification-container .noti-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.notification-container .noti-content::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+.notification-container .noti-content::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+.notification-container .noti-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+
+.notification-container .noti-content .none-noti {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.notification-container .noti-content .none-noti i {
+    font-size: 60px;
+    margin-bottom: 15px;
+}
+
+.notification-container .noti-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid #dadada;
+}
+
+.notification-list-header {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notification-list-header li {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.notification-list-header .noti-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.notification-list-header .noti-message {
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.notification-list-header .noti-time {
+    font-size: 11px;
+    color: #999;
+    display: block;
+    text-align: right;
+}
+
+
+.wrapper .header-left,
+.wrapper .header-right {
+    display: flex;
+    align-items: center;
+}
+
+
+.wrapper .header i {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.wrapper .header-right .account img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}
+
+/* End Header */
+
+/* Start Sidebar */
+.wrapper .main {
+    padding-top: 66px;
+    background-color: #fafbfd;
+}
+
+.wrapper .main .sidebar {
+    width: 240px;
+    background-color: white;
+    height: calc(100% - 66px);
+    border-right: 1px solid #f1f3f5;
+    padding: 15px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    left: 0;
+    position: fixed;
+}
+
+.wrapper .main .sidebar .sidebar-bottom {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 4px;
+    justify-content: center;
+}
+
+.main .sidebar .nav-item {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.main .sidebar .nav-item .nav-item-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-item-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#nav-item-system {
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-arrow {
+    transition: transform 0.3s;
+    font-size: 16px;
+    color: #888;
+}
+
+.nav-item.open .dropdown-arrow {
+    transform: rotate(180deg);
+}
