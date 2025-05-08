@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $(document).ready(function () {
         const table = $("#account-table").DataTable({
             ajax: {
-                url: "/WebBongDen_war/list-account", // URL Servlet trả về JSON
+                url: "/SystemSecurity_war/list-account", // URL Servlet trả về JSON
                 type: "GET", // Phương thức HTTP
                 dataSrc: "", // DataTables sẽ lấy dữ liệu từ gốc JSON
                 data: function (d) {
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Gửi yêu cầu AJAX đến server
             $.ajax({
-                url: "/WebBongDen_war/add-account", // URL servlet
+                url: "/SystemSecurity_war/add-account", // URL servlet
                 type: "POST", // Phương thức HTTP
                 contentType: "application/json", // Dữ liệu gửi là JSON
                 data: JSON.stringify(formData), // Chuyển đổi dữ liệu sang JSON
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
             $(".overlay").addClass("active");
             // Gửi yêu cầu AJAX để lấy thông tin tài khoản
             $.ajax({
-                url: "/WebBongDen_war/update-account",
+                url: "/SystemSecurity_war/update-account",
                 type: "GET",
                 data: { id: accountId },
                 success: function (data) {
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Gửi yêu cầu AJAX đến server để cập nhật tài khoản
             $.ajax({
-                url: "/WebBongDen_war/update-account", // URL servlet xử lý
+                url: "/SystemSecurity_war/update-account", // URL servlet xử lý
                 type: "POST", // Phương thức HTTP
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(formData), // Dữ liệu JSON từ form

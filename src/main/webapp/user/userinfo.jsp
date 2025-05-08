@@ -76,7 +76,7 @@
                             </li>
                             <li onclick="logout()">
                                 <i class="fa-solid fa-right-from-bracket"></i>
-                                <a href="/WebBongDen_war/LogoutController" id="logoutLink">Đăng xuất</a>
+                                <a href="/SystemSecurity_war/LogoutController" id="logoutLink">Đăng xuất</a>
                             </li>
                         </ul>
                     </nav>
@@ -277,7 +277,7 @@
 
         // Gửi AJAX để cập nhật thông tin
         $.ajax({
-            url: '/WebBongDen_war/edit-cus-info',
+            url: '/SystemSecurity_war/edit-cus-info',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),

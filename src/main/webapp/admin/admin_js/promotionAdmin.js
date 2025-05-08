@@ -12,7 +12,7 @@ document.getElementById("promotion-form").addEventListener("submit", async funct
 
     try {
         // Nếu ngày hợp lệ, tiếp tục gửi dữ liệu
-        const response = await fetch("/WebBongDen_war/add-promotion", {
+        const response = await fetch("/SystemSecurity_war/add-promotion", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json", // Gửi dữ liệu JSON
@@ -54,7 +54,7 @@ document.getElementById("promotion-form").addEventListener("submit", async funct
 $(document).ready(function () {
     // Lấy danh sách promotion cho dropdown
     $.ajax({
-        url: "/WebBongDen_war/list-promotion",
+        url: "/SystemSecurity_war/list-promotion",
         method: "GET",
         dataType: "json",
         success: function (promotions) {
@@ -77,7 +77,7 @@ $(document).ready(function () {
     // Lấy danh sách promotion cho bảng
     $("#promotion-table").DataTable({
         ajax: {
-            url: "/WebBongDen_war/list-promotion", // Dùng lại URL
+            url: "/SystemSecurity_war/list-promotion", // Dùng lại URL
             type: "GET",
             dataSrc: "", // Lấy từ gốc của JSON
         },
@@ -130,7 +130,7 @@ document.getElementById("product-to-promotion-form").addEventListener("submit", 
     };
 
     try {
-        const response = await fetch("/WebBongDen_war/add-product-to-promotion", {
+        const response = await fetch("/SystemSecurity_war/add-product-to-promotion", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -167,7 +167,7 @@ $(document).on('click', '.view-details', function () {
 
     // Gửi yêu cầu GET tới API để lấy danh sách sản phẩm
     $.ajax({
-        url: '/WebBongDen_war/get-products-by-promotion', // API trả về danh sách sản phẩm
+        url: '/SystemSecurity_war/get-products-by-promotion', // API trả về danh sách sản phẩm
         type: 'GET',
         data: { promotionId: promotionId },
         success: function (response) {
@@ -250,7 +250,7 @@ $(document).on('click', '.delete-product-inpromotion', function () {
         if (result.isConfirmed) {
             // Gửi yêu cầu DELETE tới API để xóa sản phẩm khỏi chương trình khuyến mãi
             $.ajax({
-                url: '/WebBongDen_war/remove-product-from-promotion',
+                url: '/SystemSecurity_war/remove-product-from-promotion',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ promotionId: promotionId, productId: productId }),
@@ -292,7 +292,7 @@ $(document).on("click", ".delete-promotion", function () {
         if (result.isConfirmed) {
             // Gửi yêu cầu DELETE tới API để xóa chương trình khuyến mãi
             $.ajax({
-                url: "/WebBongDen_war/delete-promotion",
+                url: "/SystemSecurity_war/delete-promotion",
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ promotionId: promotionId }), // Dữ liệu JSON chứa promotionId

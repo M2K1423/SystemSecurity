@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $(document).ready(function () {
         const table = $(".customer-table").DataTable({
             ajax: {
-                url: "/WebBongDen_war/list-customer", // URL Servlet trả về JSON
+                url: "/SystemSecurity_war/list-customer", // URL Servlet trả về JSON
                 type: "GET", // Phương thức HTTP
                 dataSrc: "", // DataTables sẽ lấy dữ liệu từ gốc JSON
                 data: function (d) {
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Gửi yêu cầu đến servlet để lấy dữ liệu đơn hàng của khách hàng
             $.ajax({
-                url: `/WebBongDen_war/customer-orders`, // URL Servlet trả về JSON
+                url: `/SystemSecurity_war/customer-orders`, // URL Servlet trả về JSON
                 type: "GET",
                 data: { customerId: customerId }, // Truyền ID khách hàng
                 success: function (orders) {

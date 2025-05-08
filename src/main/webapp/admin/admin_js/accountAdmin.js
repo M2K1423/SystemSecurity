@@ -2,7 +2,7 @@
 //     $(document).ready(function () {
 //         const table = $("#account-table").DataTable({
 //             ajax: {
-//                 url: "/WebBongDen_war/list-account", // URL Servlet trả về JSON
+//                 url: "/SystemSecurity_war/list-account", // URL Servlet trả về JSON
 //                 type: "GET", // Phương thức HTTP
 //                 dataSrc: "", // DataTables sẽ lấy dữ liệu từ gốc JSON
 //                 data: function (d) {

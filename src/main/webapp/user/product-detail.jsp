@@ -45,7 +45,7 @@
         <div class="container">
             <div class="breadcrumb">
                 <i class="fa-solid fa-house"></i>
-                <a href="/WebBongDen_war/home">Trang chủ</a>
+                <a href="/SystemSecurity_war/home">Trang chủ</a>
                 <span class="separator">›</span>
                 <span>${breadCum}</span>
             </div>
@@ -219,7 +219,7 @@
                                     <ul class="subcategory-list">
                                         <c:forEach var="subCategory" items="${subCategoriesMap[category.id]}">
                                             <li class="sub-category-item">
-                                                <a href="/WebBongDen_war/CategoryController?categoryId=${category.id}&subCategoryId=${subCategory.id}">
+                                                <a href="/SystemSecurity_war/CategoryController?categoryId=${category.id}&subCategoryId=${subCategory.id}">
                                                     <span>${subCategory.name}</span>
                                                 </a>
                                             </li>

@@ -37,7 +37,7 @@ function initializeChartContext() {
 //======================= CODE BIỂU ĐỒ THÔỐNG KÊ THEO THÁNG=========================
 // Gửi yêu cầu AJAX để lấy dữ liệu thống kê theo tháng
 async function fetchMonthlyRevenueData(year) {
-    const url = `/WebBongDen_war/revenue?statisticType=monthly&year=${year}`;
+    const url = `/SystemSecurity_war/revenue?statisticType=monthly&year=${year}`;
     try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -52,7 +52,7 @@ async function fetchMonthlyRevenueData(year) {
 
 // Gửi yêu cầu AJAX để lấy dữ liệu thống kê theo năm
 async function fetchYearlyRevenueData() {
-    const url = `/WebBongDen_war/revenue?statisticType=yearly`;
+    const url = `/SystemSecurity_war/revenue?statisticType=yearly`;
     try {
         const response = await fetch(url);
         if (!response.ok) {

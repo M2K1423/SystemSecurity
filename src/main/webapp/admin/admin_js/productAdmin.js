@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $(document).ready(function () {
         const table = $("#product-table").DataTable({
             ajax: {
-                url: "/WebBongDen_war/AdminLoadProductController", // URL Servlet
+                url: "/SystemSecurity_war/AdminLoadProductController", // URL Servlet
                 type: "GET", // Phương thức HTTP
                 data: function (d) {
                     d.searchValue = $("#product-search").val();
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Product ID:", productId); // Debug: Kiểm tra giá trị ID
 
             // Gửi yêu cầu tới server để lấy chi tiết sản phẩm
-            fetch(`/WebBongDen_war/getProductDetails?id=${productId}`)
+            fetch(`/SystemSecurity_war/getProductDetails?id=${productId}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Lỗi khi tải chi tiết sản phẩm");
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Hàm tải danh sách danh mục cha
         function loadCategories() {
-            fetch("/WebBongDen_war/categories")
+            fetch("/SystemSecurity_war/categories")
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Không thể tải danh mục cha");
@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Hàm tải danh mục con
         function loadSubCategories(categoryId) {
-            fetch(`/WebBongDen_war/categories/subcategories?categoryId=${categoryId}`)
+            fetch(`/SystemSecurity_war/categories/subcategories?categoryId=${categoryId}`)
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Không thể tải danh mục con");
@@ -321,7 +321,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 cancelButtonText: "Hủy",
             }).then((result) => {
                 if(result.isConfirmed) {
-                    fetch(`/WebBongDen_war/subcategories/delete/${subCategoryId}`, { method: "DELETE" })
+                    fetch(`/SystemSecurity_war/subcategories/delete/${subCategoryId}`, { method: "DELETE" })
                         .then((response) => {
                             if (!response.ok) throw new Error("Không thể xóa danh mục con");
                             Swal.fire({
@@ -351,7 +351,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 cancelButtonText: "Hủy",
             }).then((result) => {
                 if(result.isConfirmed) {
-                    fetch(`/WebBongDen_war/categories/delete/${categoryId}`, { method: "DELETE" })
+                    fetch(`/SystemSecurity_war/categories/delete/${categoryId}`, { method: "DELETE" })
                         .then((response) =>
                             response.ok
                                 ? response.json()
@@ -381,7 +381,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Gửi yêu cầu thêm danh mục cha
             $.ajax({
-                url: "/WebBongDen_war/categories/add",
+                url: "/SystemSecurity_war/categories/add",
                 method: "POST",
                 contentType: "application/x-www-form-urlencoded",
                 data: { name: categoryName },
@@ -411,7 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Gửi yêu cầu thêm danh mục con
             $.ajax({
-                url: "/WebBongDen_war/subcategories/add",
+                url: "/SystemSecurity_war/subcategories/add",
                 method: "POST",
                 contentType: "application/x-www-form-urlencoded",
                 data: { parentId: parentId, name: subCategoryName },
@@ -444,7 +444,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Gửi AJAX
             $.ajax({
-                url: '/WebBongDen_war/edit-product-detail', // URL của servlet
+                url: '/SystemSecurity_war/edit-product-detail', // URL của servlet
                 type: 'POST',
                 data: formData,
                 processData: false, // Không xử lý dữ liệu

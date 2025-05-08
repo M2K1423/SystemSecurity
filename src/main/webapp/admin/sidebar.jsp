@@ -57,7 +57,7 @@
         </a>
     </div>
 
-    <a href="/WebBongDen_war/LogoutController" id="login-header-btn" style="display: block">
+    <a href="/SystemSecurity_war/LogoutController" id="login-header-btn" style="display: block">
         <div class="sidebar-bottom" id="sign-up">
             <i class="fa-solid fa-arrow-right-from-bracket"></i>
             <p>Đăng xuất</p>
