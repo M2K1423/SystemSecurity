@@ -7,6 +7,7 @@ import com.example.webbongden.dao.model.Order;
 import com.example.webbongden.dao.model.OrderDetail;
 import org.jdbi.v3.core.Jdbi;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 public class OrderDao {
@@ -15,6 +16,57 @@ public class OrderDao {
     public OrderDao() {
         jdbi = JDBIConnect.get();
     }
+
+    public void updateDigitalSignature(int orderId, String signatureBase64, String certBase64) {
+        String sql = "UPDATE orders SET digital_signature = :signature, digital_cert = :cert WHERE id = :id";
+        try {
+            jdbi.useHandle(handle ->
+                    handle.createUpdate(sql)
+                            .bind("signature", signatureBase64)
+                            .bind("cert", certBase64)
+                            .bind("id", orderId)
+                            .execute()
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public Order getOrderById(int orderId) {
+        String sql = "SELECT o.id AS orderId, " +
+                "       c.cus_name AS customerName, " +
+                "       o.created_at AS orderDate, " +
+                "       o.total_price AS totalPrice, " +
+                "       s.address AS shippingAddress, " +
+                "       o.order_status AS status, " +
+                "       o.digital_signature AS digitalSignature, " +
+                "       o.digital_cert AS digitalCert " +
+                "FROM orders o " +
+                "JOIN accounts a ON o.account_id = a.id " +
+                "JOIN customers c ON a.customer_id = c.id " +
+                "JOIN shipping s ON o.id = s.order_id " +
+                "WHERE o.id = :orderId";
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("orderId", orderId)
+                        .map((rs, ctx) -> {
+                            Order order = new Order();
+                            order.setId(rs.getInt("orderId"));
+                            order.setCustomerName(rs.getString("customerName"));
+                            order.setTotalPrice(rs.getDouble("totalPrice"));
+                            order.setCreatedAt(rs.getDate("orderDate"));
+                            order.setAddress(rs.getString("shippingAddress"));
+                            order.setOrderStatus(rs.getString("status"));
+                            order.setDigitalSignature(rs.getString("digitalSignature"));
+                            order.setDigitalCert(rs.getString("digitalCert"));
+                            order.setOrderDetails(getOrderDetailsByOrderId(orderId));
+                            return order;
+                        })
+                        .findOne()
+                        .orElse(null)
+        );
+    }
+
 
     public int totalOrderInLastedMonth() {
         String sql = "SELECT COUNT(*) " +

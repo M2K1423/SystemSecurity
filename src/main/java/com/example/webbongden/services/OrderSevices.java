@@ -5,6 +5,11 @@ import com.example.webbongden.dao.OrderDao;
 import com.example.webbongden.dao.ShippingDao;
 import com.example.webbongden.dao.model.*;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +23,19 @@ public class OrderSevices {
         this.invoiceDao = new InvoiceDao();
         this.shippingDao = new ShippingDao();
     }
+    private String generateOrderHash(int orderId, String customerName, double total, Date date) throws NoSuchAlgorithmException {
+        String orderData = orderId + customerName + total + date.toString();
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        return Base64.getEncoder().encodeToString(digest.digest(orderData.getBytes()));
+    }
+
+    private byte[] signData(byte[] data, PrivateKey privateKey) throws Exception {
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initSign(privateKey);
+        signature.update(data);
+        return signature.sign();
+    }
+
 
     public int getTotalOrders() {
         return orderDao.totalOrderInLastedMonth();
