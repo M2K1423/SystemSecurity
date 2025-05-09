@@ -94,10 +94,14 @@ public class OrderSevices {
             // Bước 3: Tạo đơn hàng từ hóa đơn
             int orderId = orderDao.createOrderFromInvoice(invoice, customerInfo);
 
+            // ✅ Bước 3.1: Sinh mã hash để test
+            String hash = generateOrderHash(orderId, customerInfo.getCusName(), invoice.getTotalPrice(), invoice.getCreatedAt());
+            System.out.println("✅ Mã hash đơn hàng #" + orderId + ": " + hash);
+
             // Bước 4: Tạo chi tiết đơn hàng
             orderDao.createOrderDetails(orderId, orderDetails);
 
-            //Bước 5: Tạo thông tin vận chuyển
+            // Bước 5: Tạo thông tin vận chuyển
             Shipping shipping = new Shipping();
             shipping.setOrderId(orderId); // ID của đơn hàng
             shipping.setPickupDate(new Date()); // Ngày hiện tại
@@ -113,4 +117,5 @@ public class OrderSevices {
             throw new RuntimeException("Đã xảy ra lỗi trong quá trình tạo hóa đơn và đơn hàng.", e);
         }
     }
+
 }
