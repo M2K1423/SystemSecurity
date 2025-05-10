@@ -82,11 +82,11 @@ public class OrderSevices {
         return orderDao.getOrdersByUsername(username);
     }
 
-    public void createOrderAndInvoice(Invoices invoice, List<OrderDetail> orderDetails, Customer customerInfo) {
+    public int createOrderAndInvoice(Invoices invoice, List<OrderDetail> orderDetails, Customer customerInfo) {
         try {
             // Bước 1: Tạo hóa đơn
             int invoiceId = invoiceDao.createInvoice(invoice);
-            invoice.setId(invoiceId); // Cập nhật ID cho invoice
+            invoice.setId(invoiceId);
 
             // Bước 2: Tạo chi tiết hóa đơn
             invoiceDao.createInvoiceDetails(invoiceId, orderDetails);
@@ -94,23 +94,34 @@ public class OrderSevices {
             // Bước 3: Tạo đơn hàng từ hóa đơn
             int orderId = orderDao.createOrderFromInvoice(invoice, customerInfo);
 
+            // ✅ Bước 3.1: Sinh mã hash để test
+            String hash = generateOrderHash(orderId, customerInfo.getCusName(), invoice.getTotalPrice(), invoice.getCreatedAt());
+            System.out.println("✅ Mã hash đơn hàng #" + orderId + ": " + hash);
+
             // Bước 4: Tạo chi tiết đơn hàng
             orderDao.createOrderDetails(orderId, orderDetails);
 
-            //Bước 5: Tạo thông tin vận chuyển
+            // Bước 5: Tạo thông tin vận chuyển
             Shipping shipping = new Shipping();
-            shipping.setOrderId(orderId); // ID của đơn hàng
-            shipping.setPickupDate(new Date()); // Ngày hiện tại
-            shipping.setShippingStatus("Pending"); // Trạng thái mặc định
-            shipping.setAddress(customerInfo.getAddress()); // Địa chỉ giao hàng từ thông tin khách hàng
-            shipping.setCarrier("J&T Express"); // Nhà vận chuyển mặc định
+            shipping.setOrderId(orderId);
+            shipping.setPickupDate(new Date());
+            shipping.setShippingStatus("Pending");
+            shipping.setAddress(customerInfo.getAddress());
+            shipping.setCarrier("J&T Express");
 
-            // Lưu thông tin vận chuyển
             shippingDao.insertShipping(shipping);
+
+            // ✅ Return lại mã đơn hàng để controller xử lý tiếp
+            return orderId;
 
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Đã xảy ra lỗi trong quá trình tạo hóa đơn và đơn hàng.", e);
         }
     }
+
+    public Order getOrderById(int orderId) {
+        return orderDao.getOrderById(orderId);
+    }
+
 }

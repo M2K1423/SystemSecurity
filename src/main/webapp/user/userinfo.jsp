@@ -150,10 +150,7 @@
 
                     <div class="order-table-container" id="orderTableContainer">
                         <%
-                            // Lấy danh sách orders từ request hoặc session
                             List<Order> orders = (List<Order>) session.getAttribute("orders");
-
-                            // Kiểm tra nếu danh sách đơn hàng không rỗng
                             if (orders != null && !orders.isEmpty()) {
                         %>
                         <table class="order-table">
@@ -163,6 +160,7 @@
                                 <th>Ngày đặt</th>
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
+                                <th>Tải hóa đơn</th> <!-- Cột mới -->
                             </tr>
                             </thead>
                             <tbody>
@@ -174,6 +172,12 @@
                                 <td><%= order.getCreatedAt() %></td>
                                 <td><%= order.getTotalPrice() %></td>
                                 <td><%= order.getOrderStatus() %></td>
+                                <td>
+                                    <a href="<%= request.getContextPath() %>/download-invoice?id=<%= order.getId() %>"
+                                       class="btn btn-sm btn-outline-primary" target="_blank">
+                                        Tải
+                                    </a>
+                                </td>
                             </tr>
                             <%
                                 }
@@ -188,6 +192,7 @@
                             }
                         %>
                     </div>
+
                 </div>
 
                 <!-- đổi mật khẩu -->

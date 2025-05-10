@@ -80,13 +80,22 @@ public class PayCartController extends HttpServlet {
             invoice.setPromotionId(promotionId);
 
             // Lưu hóa đơn và chi tiết đơn hàng
-            orderServices.createOrderAndInvoice(invoice, orderDetails, customerInfo);
+//            orderServices.createOrderAndInvoice(invoice, orderDetails, customerInfo);
 
-            // Xóa giỏ hàng khỏi session sau khi thanh toán
+            int orderId = orderServices.createOrderAndInvoice(invoice, orderDetails, customerInfo);
+            Order createdOrder = orderServices.getOrderById(orderId);
+
+            request.setAttribute("latestOrder", createdOrder);
+
+// Xóa giỏ hàng
             session.removeAttribute("cart");
 
+// Chuyển tới trang xác nhận chữ ký
+            request.getRequestDispatcher("/user/confirm-signature.jsp").forward(request, response);
+
+
             // Điều hướng tới trang hoàn tất
-            response.sendRedirect("/SystemSecurity_war/cart#finish");
+//            response.sendRedirect("/SystemSecurity_war/cart#finish");
         } catch (Exception e) {
             e.printStackTrace();
             // Xử lý lỗi và quay lại trang giỏ hàng
