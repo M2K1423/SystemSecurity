@@ -5,10 +5,11 @@ import com.example.webbongden.dao.OrderDao;
 import com.example.webbongden.dao.ShippingDao;
 import com.example.webbongden.dao.model.*;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.Signature;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
+import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -94,9 +95,10 @@ public class OrderSevices {
             // Bước 3: Tạo đơn hàng từ hóa đơn
             int orderId = orderDao.createOrderFromInvoice(invoice, customerInfo);
 
-            // ✅ Bước 3.1: Sinh mã hash để test
-            String hash = generateOrderHash(orderId, customerInfo.getCusName(), invoice.getTotalPrice(), invoice.getCreatedAt());
-            System.out.println("✅ Mã hash đơn hàng #" + orderId + ": " + hash);
+            // ✅ Bước 3.1: Sinh hash
+            String hashValue = generateOrderHash(orderId, customerInfo.getCusName(), invoice.getTotalPrice(), invoice.getCreatedAt());
+            System.out.println("✅ Mã hash đơn hàng #" + orderId + ": " + hashValue);
+            orderDao.updateOrderHash(orderId, hashValue);
 
             // Bước 4: Tạo chi tiết đơn hàng
             orderDao.createOrderDetails(orderId, orderDetails);
@@ -111,7 +113,37 @@ public class OrderSevices {
 
             shippingDao.insertShipping(shipping);
 
-            // ✅ Return lại mã đơn hàng để controller xử lý tiếp
+            // ✅ Bước 6: Ký số và lưu vào DB
+            try {
+                // Tải keystore
+                String keystorePath = getClass().getClassLoader().getResource("../../webapp/WEB-INF/keystore.p12").getPath();
+                KeyStore keyStore = KeyStore.getInstance("PKCS12");
+                try (InputStream is = new FileInputStream(keystorePath)) {
+                    keyStore.load(is, "keystorePassword".toCharArray()); // sửa lại pass nếu cần
+                }
+
+                PrivateKey privateKey = (PrivateKey) keyStore.getKey("myalias", "keystorePassword".toCharArray());
+                X509Certificate cert = (X509Certificate) keyStore.getCertificate("myalias");
+
+                // Ký bằng SHA256withRSA
+                Signature signature = Signature.getInstance("SHA256withRSA");
+                signature.initSign(privateKey);
+                signature.update(hashValue.getBytes(StandardCharsets.UTF_8));
+                byte[] digitalSignature = signature.sign();
+
+                // Base64
+                String signatureBase64 = Base64.getEncoder().encodeToString(digitalSignature);
+                String certBase64 = Base64.getEncoder().encodeToString(cert.getEncoded());
+                String hashBase64 = Base64.getEncoder().encodeToString(hashValue.getBytes(StandardCharsets.UTF_8));
+
+                // Lưu vào DB
+                orderDao.updateDigitalSignature(orderId, signatureBase64, certBase64, hashBase64);
+                System.out.println("✅ Đã lưu chữ ký số cho đơn hàng #" + orderId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("❌ Lỗi khi ký số đơn hàng #" + orderId);
+            }
+
             return orderId;
 
         } catch (Exception e) {
@@ -119,6 +151,7 @@ public class OrderSevices {
             throw new RuntimeException("Đã xảy ra lỗi trong quá trình tạo hóa đơn và đơn hàng.", e);
         }
     }
+
 
     public Order getOrderById(int orderId) {
         return orderDao.getOrderById(orderId);

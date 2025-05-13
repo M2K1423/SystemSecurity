@@ -27,7 +27,7 @@ public class UploadSignatureServlet extends HttpServlet {
 
         if (order == null || order.getDigitalCert() == null) {
             request.setAttribute("message", "Không tìm thấy đơn hàng hoặc chứng thư số.");
-            request.getRequestDispatcher("/user/verify_result.jsp").forward(request, response);
+            request.getRequestDispatcher("/user/verify_order.jsp").forward(request, response);
             return;
         }
 
@@ -50,12 +50,12 @@ public class UploadSignatureServlet extends HttpServlet {
 
             request.setAttribute("signatureValid", isValid);
             request.setAttribute("order", order);
-            request.getRequestDispatcher("/user/verify_result.jsp").forward(request, response);
+            request.getRequestDispatcher("/user/verify_order.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("message", "Lỗi xác minh chữ ký: " + e.getMessage());
-            request.getRequestDispatcher("/user/verify_result.jsp").forward(request, response);
+            request.getRequestDispatcher("/user/verify_order.jsp").forward(request, response);
         }
     }
 }

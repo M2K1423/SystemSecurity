@@ -17,13 +17,14 @@ public class OrderDao {
         jdbi = JDBIConnect.get();
     }
 
-    public void updateDigitalSignature(int orderId, String signatureBase64, String certBase64) {
-        String sql = "UPDATE orders SET digital_signature = :signature, digital_cert = :cert WHERE id = :id";
+    public void updateDigitalSignature(int orderId, String signatureBase64, String certBase64, String hashBase64) {
+        String sql = "UPDATE orders SET digital_signature = :signature, digital_cert = :cert, hash_value = :hash WHERE id = :id";
         try {
             jdbi.useHandle(handle ->
                     handle.createUpdate(sql)
                             .bind("signature", signatureBase64)
                             .bind("cert", certBase64)
+                            .bind("hash", hashBase64)
                             .bind("id", orderId)
                             .execute()
             );
@@ -31,15 +32,20 @@ public class OrderDao {
             e.printStackTrace();
         }
     }
+    public void updateOrderHash(int orderId, String hashValue) {
+        String sql = "UPDATE orders SET hash_value = :hash WHERE id = :id";
+        jdbi.useHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("hash", hashValue)
+                        .bind("id", orderId)
+                        .execute()
+        );
+    }
+
     public Order getOrderById(int orderId) {
-        String sql = "SELECT o.id AS orderId, " +
-                "       c.cus_name AS customerName, " +
-                "       o.created_at AS orderDate, " +
-                "       o.total_price AS totalPrice, " +
-                "       s.address AS shippingAddress, " +
-                "       o.order_status AS status, " +
-                "       o.digital_signature AS digitalSignature, " +
-                "       o.digital_cert AS digitalCert " +
+        String sql = "SELECT o.id AS orderId, o.created_at AS orderDate, o.total_price AS totalPrice, " +
+                "o.order_status AS orderStatus, o.hash_value AS hashValue, " +
+                "c.cus_name AS customerName, s.address AS shippingAddress " +
                 "FROM orders o " +
                 "JOIN accounts a ON o.account_id = a.id " +
                 "JOIN customers c ON a.customer_id = c.id " +
@@ -52,20 +58,19 @@ public class OrderDao {
                         .map((rs, ctx) -> {
                             Order order = new Order();
                             order.setId(rs.getInt("orderId"));
-                            order.setCustomerName(rs.getString("customerName"));
-                            order.setTotalPrice(rs.getDouble("totalPrice"));
                             order.setCreatedAt(rs.getDate("orderDate"));
+                            order.setTotalPrice(rs.getDouble("totalPrice"));
+                            order.setOrderStatus(rs.getString("orderStatus"));
+                            order.setHashValue(rs.getString("hashValue"));  // ⚠️ Set hash
+                            order.setCustomerName(rs.getString("customerName"));
                             order.setAddress(rs.getString("shippingAddress"));
-                            order.setOrderStatus(rs.getString("status"));
-                            order.setDigitalSignature(rs.getString("digitalSignature"));
-                            order.setDigitalCert(rs.getString("digitalCert"));
-                            order.setOrderDetails(getOrderDetailsByOrderId(orderId));
                             return order;
                         })
                         .findOne()
                         .orElse(null)
         );
     }
+
 
 
     public int totalOrderInLastedMonth() {

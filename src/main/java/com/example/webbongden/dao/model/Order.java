@@ -19,7 +19,7 @@ public class Order {
     private String note;
     private String digitalSignature;
     private String digitalCert;
-
+    private String hashValue;
     // Constructors
     public Order() {
     }
@@ -55,7 +55,13 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderDetails = orderDetails;
     }
+    public String getHashValue() {
+        return hashValue;
+    }
 
+    public void setHashValue(String hashValue) {
+        this.hashValue = hashValue;
+    }
     public int getAccountId() {
         return accountId;
     }
