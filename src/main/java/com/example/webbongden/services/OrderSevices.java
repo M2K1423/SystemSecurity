@@ -7,6 +7,7 @@ import com.example.webbongden.dao.model.*;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.X509Certificate;
@@ -115,8 +116,13 @@ public class OrderSevices {
 
             // ✅ Bước 6: Ký số và lưu vào DB
             try {
-                // Tải keystore
-                String keystorePath = getClass().getClassLoader().getResource("../../webapp/WEB-INF/keystore.p12").getPath();
+                // Đúng: vì keystore.p12 nằm trực tiếp trong resources/
+                URL keystoreURL = getClass().getClassLoader().getResource("keystore.p12");
+                if (keystoreURL == null) {
+                    throw new RuntimeException("❌ Không tìm thấy file keystore.p12 trong resources/");
+                }
+                String keystorePath = keystoreURL.getPath();
+
                 KeyStore keyStore = KeyStore.getInstance("PKCS12");
                 try (InputStream is = new FileInputStream(keystorePath)) {
                     keyStore.load(is, "keystorePassword".toCharArray()); // sửa lại pass nếu cần

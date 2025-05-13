@@ -52,11 +52,11 @@ public class VerifySignatureServlet extends HttpServlet {
 
             req.setAttribute("order", order);
             req.setAttribute("isValid", isValid);
-            req.getRequestDispatcher("/user/verify_result.jsp").forward(req, resp);
+            req.getRequestDispatcher("/user/verify_order.jsp").forward(req, resp);
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("error", "Lỗi xác thực: " + e.getMessage());
-            req.getRequestDispatcher("/user/verify_result.jsp").forward(req, resp);
+            req.getRequestDispatcher("/user/verify_.jsp").forward(req, resp);
         }
     }
 }

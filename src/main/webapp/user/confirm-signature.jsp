@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: PHAN PHAT
-  Date: 5/10/2025
-  Time: 5:30 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.example.webbongden.dao.model.Order" %>
 
@@ -17,13 +10,13 @@
   <title>Xác nhận chữ ký đơn hàng</title>
   <style>
     body { font-family: Arial; padding: 20px; }
-    textarea { width: 100%; font-size: 14px; }
+    textarea, input[type="file"] { width: 100%; font-size: 14px; margin-top: 5px; }
     button {
       background-color: #4CAF50; color: white; padding: 10px 20px;
       border: none; border-radius: 4px; cursor: pointer;
     }
     .box {
-      max-width: 600px; margin: auto; border: 1px solid #ccc; padding: 20px;
+      max-width: 700px; margin: auto; border: 1px solid #ccc; padding: 20px;
       border-radius: 10px; background: #f9f9f9;
     }
   </style>
@@ -44,13 +37,28 @@
   </a>
 
   <h3>Bước 2: Ký file bằng ứng dụng Java (.p12)</h3>
-  <p>Dùng phần mềm bạn đã tải để ký file. Sau đó dán chữ ký tại đây:</p>
+  <p>Sau khi ký, bạn có thể:</p>
+  <ul>
+    <li>Dán thủ công nội dung chữ ký vào khung dưới</li>
+    <li>Hoặc <strong>tải file .sig</strong> đã ký lên</li>
+  </ul>
 
+  <!-- Dán chữ ký -->
   <form action="${pageContext.request.contextPath}/upload-signature" method="post">
     <input type="hidden" name="orderId" value="<%= order.getId() %>">
-    <label for="signature">Dán chữ ký (Base64):</label><br>
-    <textarea name="signature" rows="6" placeholder="Dán nội dung chữ ký số ở đây..." required></textarea><br><br>
-    <button type="submit">🔐 Xác minh chữ ký</button>
+    <label for="signature">🔽 Dán chữ ký (Base64):</label><br>
+    <textarea name="signature" rows="6" placeholder="Dán nội dung chữ ký số ở đây..."></textarea><br><br>
+    <button type="submit">🔐 Xác minh chữ ký (dán thủ công)</button>
+  </form>
+
+  <hr>
+
+  <!-- Tải file chữ ký -->
+  <form action="${pageContext.request.contextPath}/upload-signature" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="orderId" value="<%= order.getId() %>">
+    <label for="signatureFile">📤 Hoặc chọn file chữ ký (.sig):</label>
+    <input type="file" name="signatureFile" accept=".sig" required><br><br>
+    <button type="submit">🔐 Xác minh chữ ký (từ file)</button>
   </form>
   <% } else { %>
   <p style="color:red;">Không tìm thấy thông tin đơn hàng.</p>
