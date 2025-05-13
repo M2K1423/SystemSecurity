@@ -96,6 +96,21 @@
             <div class="nav-item" data-tab="payment">Thanh toán</div>
             <div class="nav-item" data-tab="finish">Hoàn tất</div>
         </div>
+        <%@ page contentType="text/html;charset=UTF-8" %>
+        <%@ page import="com.example.webbongden.dao.model.Order" %>
+        <%
+            Order order = (Order) request.getAttribute("order");
+        %>
+
+        <h2>Xác minh chữ ký số cho hóa đơn</h2>
+        <p>Đơn hàng: <strong>#<%= order.getId() %></strong></p>
+
+        <form action="${pageContext.request.contextPath}/upload-signature" method="post">
+            <input type="hidden" name="orderId" value="<%= order.getId() %>"/>
+            <label for="signature">Dán chữ ký đã tạo (Base64):</label><br>
+            <textarea name="signature" rows="5" cols="60"></textarea><br><br>
+            <button type="submit">Xác minh chữ ký</button>
+        </form>
 
         <div class="tab-container">
             <div class="tab-content" id="cart">
