@@ -11,9 +11,11 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class OrderSevices {
     public final OrderDao orderDao;
@@ -96,11 +98,6 @@ public class OrderSevices {
             // Bước 3: Tạo đơn hàng từ hóa đơn
             int orderId = orderDao.createOrderFromInvoice(invoice, customerInfo);
 
-            // ✅ Bước 3.1: Sinh hash
-            String hashValue = generateOrderHash(orderId, customerInfo.getCusName(), invoice.getTotalPrice(), invoice.getCreatedAt());
-            System.out.println("✅ Mã hash đơn hàng #" + orderId + ": " + hashValue);
-            orderDao.updateOrderHash(orderId, hashValue);
-
             // Bước 4: Tạo chi tiết đơn hàng
             orderDao.createOrderDetails(orderId, orderDetails);
 
@@ -111,40 +108,47 @@ public class OrderSevices {
             shipping.setShippingStatus("Pending");
             shipping.setAddress(customerInfo.getAddress());
             shipping.setCarrier("J&T Express");
-
             shippingDao.insertShipping(shipping);
 
-            // ✅ Bước 6: Ký số và lưu vào DB
+            // ✅ Bước 6: Truy vấn lại Order từ DB để lấy createdAt chính xác
+            Order order = orderDao.getOrderById(orderId);
+            if (order == null) throw new RuntimeException("Không lấy được đơn hàng sau khi tạo.");
+
+            // ✅ Bước 7: Sinh rawData + hash
+            String rawData = generateRawData(order.getId(), order.getCustomerName(), order.getTotalPrice(), order.getCreatedAt());
+            String hashValue = Base64.getEncoder().encodeToString(
+                    MessageDigest.getInstance("SHA-256").digest(rawData.getBytes(StandardCharsets.UTF_8))
+            );
+            orderDao.updateOrderHash(orderId, hashValue);
+            System.out.println("✅ Mã hash đơn hàng #" + orderId + ": " + hashValue);
+
+            // ✅ Bước 8: Ký số
             try {
-                // Đúng: vì keystore.p12 nằm trực tiếp trong resources/
                 URL keystoreURL = getClass().getClassLoader().getResource("keystore.p12");
                 if (keystoreURL == null) {
                     throw new RuntimeException("❌ Không tìm thấy file keystore.p12 trong resources/");
                 }
-                String keystorePath = keystoreURL.getPath();
 
                 KeyStore keyStore = KeyStore.getInstance("PKCS12");
-                try (InputStream is = new FileInputStream(keystorePath)) {
-                    keyStore.load(is, "keystorePassword".toCharArray()); // sửa lại pass nếu cần
+                try (InputStream is = new FileInputStream(keystoreURL.getPath())) {
+                    keyStore.load(is, "keystorePassword".toCharArray()); // đổi nếu pass khác
                 }
 
                 PrivateKey privateKey = (PrivateKey) keyStore.getKey("myalias", "keystorePassword".toCharArray());
                 X509Certificate cert = (X509Certificate) keyStore.getCertificate("myalias");
 
-                // Ký bằng SHA256withRSA
                 Signature signature = Signature.getInstance("SHA256withRSA");
                 signature.initSign(privateKey);
-                signature.update(hashValue.getBytes(StandardCharsets.UTF_8));
+                signature.update(rawData.getBytes(StandardCharsets.UTF_8));
                 byte[] digitalSignature = signature.sign();
 
-                // Base64
                 String signatureBase64 = Base64.getEncoder().encodeToString(digitalSignature);
                 String certBase64 = Base64.getEncoder().encodeToString(cert.getEncoded());
-                String hashBase64 = Base64.getEncoder().encodeToString(hashValue.getBytes(StandardCharsets.UTF_8));
 
-                // Lưu vào DB
-                orderDao.updateDigitalSignature(orderId, signatureBase64, certBase64, hashBase64);
+                orderDao.updateDigitalSignature(orderId, signatureBase64, certBase64, hashValue);
                 System.out.println("✅ Đã lưu chữ ký số cho đơn hàng #" + orderId);
+                System.out.println("🔐 rawData = " + rawData);
+
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("❌ Lỗi khi ký số đơn hàng #" + orderId);
@@ -159,6 +163,15 @@ public class OrderSevices {
     }
 
 
+    private String generateRawData(int orderId, String customerName, double total, Date createdAt) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String totalStr = String.format("%.2f", total);
+        customerName = customerName.trim();
+        String rawData = orderId + customerName + totalStr + sdf.format(createdAt);
+        System.out.println("Generated Raw Data: " + rawData);
+        return rawData;
+    }
     public Order getOrderById(int orderId) {
         return orderDao.getOrderById(orderId);
     }

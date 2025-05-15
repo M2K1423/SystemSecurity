@@ -45,6 +45,7 @@ public class OrderDao {
     public Order getOrderById(int orderId) {
         String sql = "SELECT o.id AS orderId, o.created_at AS orderDate, o.total_price AS totalPrice, " +
                 "o.order_status AS orderStatus, o.hash_value AS hashValue, " +
+                "o.digital_cert AS digitalCert, o.digital_signature AS digitalSignature, " +
                 "c.cus_name AS customerName, s.address AS shippingAddress " +
                 "FROM orders o " +
                 "JOIN accounts a ON o.account_id = a.id " +
@@ -61,7 +62,9 @@ public class OrderDao {
                             order.setCreatedAt(rs.getDate("orderDate"));
                             order.setTotalPrice(rs.getDouble("totalPrice"));
                             order.setOrderStatus(rs.getString("orderStatus"));
-                            order.setHashValue(rs.getString("hashValue"));  // ⚠️ Set hash
+                            order.setHashValue(rs.getString("hashValue"));
+                            order.setDigitalCert(rs.getString("digitalCert")); // ✅
+                            order.setDigitalSignature(rs.getString("digitalSignature")); // ✅
                             order.setCustomerName(rs.getString("customerName"));
                             order.setAddress(rs.getString("shippingAddress"));
                             return order;
@@ -70,6 +73,7 @@ public class OrderDao {
                         .orElse(null)
         );
     }
+
 
 
 
