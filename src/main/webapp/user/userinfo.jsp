@@ -31,6 +31,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/user.css">
 </head>
 <style>
+    .key-btn button,
     .info-btn button {
         width: 120px;
         padding: 5px 0;
@@ -62,6 +63,10 @@
                             >
                                 <i class="fa-solid fa-user"></i>
                                 <a href="#">Thông tin tài khoản</a>
+                            </li>
+                            <li data-section="public_key" onclick="showContent('public_key')">
+                                <i class="fa-solid fa-key" ></i>
+                                <a href="#">Khoá công khai</a>
                             </li>
                             <li data-section="order" onclick="showContent('order')">
                                 <i class="fa-solid fa-bars-progress"></i>
@@ -130,7 +135,7 @@
 
                         <div class="info-btn">
 
-                                <button type="submit" id="save-info">Lưu</button>
+                                <button type="submit" id="save-info" style="display: none;">Lưu</button>
 
 
 
@@ -141,6 +146,32 @@
                     <p id="saveMessage" style="display: none; color: green">
                         Hồ sơ của bạn đã được lưu!
                     </p>
+                </div>
+                <!-- Quản lý khoá -->
+                <div id="public_key" class="content_section" style="display: none;">
+                    <div class="key_header">
+                        <h1>QUẢN LÝ KHOÁ CÔNG KHAI</h1>
+                    </div>
+
+                    <form class="key-form" action="manageKey" method="POST">
+                        <div class="publicKey-cus dlex">
+                            <label for="publicKey">Khoá công khai</label>
+                            <div>
+                                <textarea id="publicKey" name="publicKey" required readonly>${publicKey}</textarea>
+                            </div>
+                        </div>
+                        <div class="auth-password-cus dlex">
+                            <label for="auth-password">Xác nhận mật khẩu</label>
+                            <div>
+                                <input type="password" id="auth-password" name="password" required readonly/>
+                            </div>
+                        </div>
+
+                        <div class="key-btn">
+                            <button type="submit" id ="save-publicKey" style="display : none;">Xác nhận</button>
+                            <button type="button" id ="edit-publicKey">Cập nhật khoá</button>
+                        </div>
+                    </form>
                 </div>
                 <!-- Quản lý đơn hàng -->
                 <div id="order" class="content_section" style="display: none;">
@@ -309,6 +340,60 @@
             }
         });
     });
+
+    // chỉnh sửa khoá
+    document.getElementById('edit-publicKey').addEventListener('click', function () {
+        const inputs = document.querySelectorAll('.key-form input, .key-form textarea');
+
+        inputs.forEach(input => {
+            input.readOnly = false;
+            input.classList.add('editable');
+        });
+
+        document.getElementById('edit-publicKey').style.display = 'none';
+        document.getElementById('save-publicKey').style.display = 'inline-block';
+    });
+
+    // lưu khoá công khai
+    document.getElementById('save-publicKey').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Lấy ID khách hàng từ thuộc tính data
+        const customerId = document.getElementById('userInfo').getAttribute('data-customer-id');
+
+        const formData = {
+            customerId: customerId,
+            publicKey: document.getElementById('publicKey').value,
+            password: document.getElementById('auth-password').value,
+        };
+
+        $.ajax({
+            url: '/SystemSecurity_war/edit-publicKey',
+            type: 'POST',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: formData,
+            success: function (response) {
+                if(response.success){
+                    Swal.fire('Thành công!', response.success, 'success');
+
+                    const inputs = document.querySelectorAll('.key-form input, .key-form textarea');
+                    inputs.forEach(input => {
+                        input.readOnly = true; // Bật lại chế độ readonly
+                        input.classList.remove('editable'); // Xóa lớp editable
+                    });
+
+                    // Ẩn nút lưu và hiển thị nút sửa
+                    document.getElementById('save-publicKey').style.display = 'none';
+                    document.getElementById('edit-publicKey').style.display = 'inline-block';
+                } else {
+                    Swal.fire('Lỗi!', 'Đã xảy ra lỗi khi cập nhật thông tin.', 'error');
+                    }
+            },
+            error: function () {
+                Swal.fire('Lỗi!', 'Đã xảy ra lỗi 1 khi cập nhật thông tin.', 'error');
+            }
+        });
+    });
+
 </script>
 </html>
-
