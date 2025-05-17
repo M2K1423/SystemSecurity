@@ -364,7 +364,7 @@
         const formData = {
             customerId: customerId,
             publicKey: document.getElementById('publicKey').value,
-            password: document.getElementById('auth-password').value,
+            authPassword: document.getElementById('auth-password').value,
         };
 
         $.ajax({
@@ -373,8 +373,8 @@
             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             data: formData,
             success: function (response) {
-                if(response.success){
-                    Swal.fire('Thành công!', response.success, 'success');
+                if (response.success) {
+                    Swal.fire('Thành công!', response.message, 'success');
 
                     const inputs = document.querySelectorAll('.key-form input, .key-form textarea');
                     inputs.forEach(input => {
@@ -386,14 +386,13 @@
                     document.getElementById('save-publicKey').style.display = 'none';
                     document.getElementById('edit-publicKey').style.display = 'inline-block';
                 } else {
-                    Swal.fire('Lỗi!', 'Đã xảy ra lỗi khi cập nhật thông tin.', 'error');
-                    }
+                    Swal.fire('Lỗi!', response.message, 'error');
+                }
             },
             error: function () {
-                Swal.fire('Lỗi!', 'Đã xảy ra lỗi 1 khi cập nhật thông tin.', 'error');
+                Swal.fire('Lỗi!', 'Đã xảy ra lỗi kết nối với máy chủ.', 'error');
             }
         });
     });
-
 </script>
 </html>
