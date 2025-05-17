@@ -1,0 +1,318 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Căn chỉnh phần tử theo chiều dọc từ đầu */
+    min-height: 100%;
+    padding: 50px 0; /* Đảm bảo main có chiều cao đầy đủ tùy vào nội dung */
+}
+
+.container-cus {
+    display: flex;
+    gap: 30px;
+    height: 100%; 
+}
+
+.sidebar-info-customer {
+    background-color: #fff;
+    padding: 15px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-height: 100%; 
+}
+
+.sidebar-info-customer .customer-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    border-bottom: 1px solid #dadada;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+}
+
+.sidebar-info-customer .customer-info img {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+}
+
+.sidebar-info-customer .customer-info .customer-name {
+    font-weight: 550;
+    font-size: 16px;
+}
+
+.sidebar-info-customer .menu-user ul li {
+   padding: 15px;
+   border-radius: 4px;
+   margin-bottom: 10px;
+}
+
+.sidebar-info-customer .menu-user ul li:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+.sidebar-info-customer .menu-user ul li.active {
+    background-color: #f2f2f2;
+}
+
+.sidebar-info-customer .menu-user ul li a {
+    text-decoration: none;
+    margin-left: 10px;
+    font-size: 14 px;
+    color: #000;
+}
+
+/* Code phần content */
+
+.content {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 4px;
+    width: 700px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-height: 100%; /* Đảm bảo content có chiều cao đầy đủ */
+}
+
+.content .information_header h2{
+    font-size: 18px !important;
+    font-weight: 600;
+    text-align: center;
+}
+
+.dlex {
+    display: flex;
+    gap: 100px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.info-form {
+    margin-top: 30px;
+}
+
+.info-form label {
+    width: 30%;
+    text-align: left;
+}
+
+.info-form .dlex div {
+    width: 70%;
+}
+
+.info-form .dlex input[type="text"],
+.info-form .dlex input[type="email"],
+.info-form .dlex input[type="tel"] {
+    padding: 0 15px;
+    height: 36px;
+    border-radius: 4px;
+    border: 1px solid #dadada;
+    width: 80%;
+}
+
+.DMY {
+    display: flex;
+    gap: 10px; 
+}
+
+.DMY select {
+    padding: 0 15px;
+    height: 36px;
+    border-radius: 4px;
+    border: 1px solid #dadada;
+    max-width: 120px; 
+}
+
+.DMY select:focus {
+    border-color: #4288e5; 
+    outline: none;
+}
+
+.content .submit {
+    width: 150px;
+    height: 40px;
+    border-radius: 4px;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.content .submit button {
+    color: white;
+    font-weight: 500;
+    width: 100%;
+}
+
+/* code cho đổi mật khẩu của user */
+.content .content_section .change_password_header{
+    border-bottom: 1px solid #efefef;
+    margin-bottom: 10px;
+}
+.content .content_section .change_password_header h1{
+    font-size: 18px !important;
+    font-weight: 600;
+    line-height: 2rem;
+
+}
+.content .content_section .change_password_header .title{
+    color: rgba(0, 0, 0, .54);
+    font-size: 14px;
+    line-height: 1.5rem;
+    margin-top: 4px;
+}
+.dlex {
+    display: flex;
+    gap: 100px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.change_password_form {
+    margin-top: 30px;
+}
+
+.change_password_form label {
+    width: 30%;
+    text-align: right;
+}
+
+.change_password_form .dlex div {
+    width: 70%;
+}
+
+.change_password_form .dlex input[type="password"] {
+    padding: 0 15px;
+    height: 36px;
+    border-radius: 4px;
+    border: 1px solid #dadada;
+    width: 80%;
+}
+
+
+.message {
+    margin-top: 10px;
+    font-size: 14px;
+    color: red;
+}
+
+/* Code đơn hàng của user */
+.content .content_section .order_header h2 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.content_section .search_bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 38px;
+    border: 1px solid #dadada;
+    padding-left: 20px;
+    margin-top: 20px;
+}
+
+.content_section .search_bar input{
+    width: 80%;
+    height: 38px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+}
+
+.content_section .search_bar button {
+    font-size: 14px;
+    text-align: center;
+    width: 100px;
+    height: 38px;
+} 
+
+#order-status {
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid #dadada;
+    font-size: 14px;
+}
+
+.filter_bar {
+    margin-top: 20px;
+}
+
+.order-table-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto; /* Cập nhật để cột tự động co giãn theo nội dung */
+}
+
+.order-table th,
+.order-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dadada;
+    font-size: 14px;
+    color: #000;
+}
+
+.order-table th {
+    background-color: #fff;
+    color: black;
+    font-weight: 600;
+}
+
+.order-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.order-table tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+.order-table td {
+    word-wrap: break-word;
+}
+
+.order-table .action-btn {
+    padding: 6px 12px;
+    background-color: #4288e5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.order-table .action-btn:hover {
+    background-color: #357ad5;
+}
+
+.footer {
+    margin-top: 0;
+}
+
+.info-btn {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 30px;
+    margin-top: 20px;
+}
