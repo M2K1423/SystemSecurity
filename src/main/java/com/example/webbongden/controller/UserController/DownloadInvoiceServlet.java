@@ -9,6 +9,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 @WebServlet("/download-invoice")
 public class DownloadInvoiceServlet extends HttpServlet {
@@ -24,19 +27,22 @@ public class DownloadInvoiceServlet extends HttpServlet {
             return;
         }
 
+        // ✅ Format lại đúng rawData để ký
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        String totalStr = String.format("%.2f", order.getTotalPrice());
+        String customerName = order.getCustomerName().trim();
+
+        String rawData = order.getId() + customerName + totalStr + sdf.format(order.getCreatedAt());
+
         String filename = "invoice_" + orderId + ".txt";
-        String content = "Order ID: " + order.getId() + "\n"
-                + "Customer: " + order.getCustomerName() + "\n"
-                + "Date: " + order.getCreatedAt() + "\n"
-                + "Total: " + order.getTotalPrice() + "\n";
 
         resp.setContentType("text/plain");
         resp.setHeader("Content-Disposition", "attachment;filename=" + filename);
 
-        OutputStream os = resp.getOutputStream();
-        os.write(content.getBytes());
-        os.flush();
-        os.close();
+        try (OutputStream os = resp.getOutputStream()) {
+            os.write(rawData.getBytes(StandardCharsets.UTF_8));
+        }
     }
 }
-

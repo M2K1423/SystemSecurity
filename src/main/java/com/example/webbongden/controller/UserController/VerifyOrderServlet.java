@@ -86,7 +86,8 @@ public class VerifyOrderServlet extends HttpServlet {
             // Verify with stored hash
             byte[] storedHash = Base64.getDecoder().decode(storedHashBase64);
             System.out.println("Updating verifier with stored hash: " + storedHashBase64);
-            sig.update(storedHash);
+            sig.update(rawData.getBytes(StandardCharsets.UTF_8)); // ✅ Dùng rawData gốc
+
             boolean valid = sig.verify(Base64.getDecoder().decode(base64Sig));
             System.out.println("Verification Result (Stored Hash): " + valid);
 
@@ -95,21 +96,13 @@ public class VerifyOrderServlet extends HttpServlet {
                 System.out.println("Warning: Verification with stored hash failed. Trying with computed hash.");
                 sig.initVerify(publicKey);
                 System.out.println("Updating verifier with computed hash: " + computedHashBase64);
-                sig.update(computedHash);
+                sig.update(rawData.getBytes(StandardCharsets.UTF_8)); // ✅ Dùng rawData gốc
+
                 valid = sig.verify(Base64.getDecoder().decode(base64Sig));
                 System.out.println("Verification Result (Computed Hash): " + valid);
             }
 
-            // Try with expected hash for order #44
-            if (!valid && orderId == 44) {
-                String expectedHashBase64 = "7vbIjLYFEcWUkNCuDEaACbPtfKL6Gk/PrIdwAJwYW5g=";
-                byte[] expectedHash = Base64.getDecoder().decode(expectedHashBase64);
-                sig.initVerify(publicKey);
-                System.out.println("Updating verifier with expected hash: " + expectedHashBase64);
-                sig.update(expectedHash);
-                valid = sig.verify(Base64.getDecoder().decode(base64Sig));
-                System.out.println("Verification Result (Expected Hash): " + valid);
-            }
+
 
             // 6. Truyền sang JSP
             req.setAttribute("order", order);

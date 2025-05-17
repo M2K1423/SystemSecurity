@@ -44,7 +44,7 @@
   </ul>
 
   <!-- Dán chữ ký -->
-  <form action="${pageContext.request.contextPath}/upload-signature" method="post">
+  <form action="${pageContext.request.contextPath}/verify-signature" method="post">
     <input type="hidden" name="orderId" value="<%= order.getId() %>">
     <label for="signature">🔽 Dán chữ ký (Base64):</label><br>
     <textarea name="signature" rows="6" placeholder="Dán nội dung chữ ký số ở đây..."></textarea><br><br>
@@ -54,7 +54,7 @@
   <hr>
 
   <!-- Tải file chữ ký -->
-  <form action="${pageContext.request.contextPath}/upload-signature" method="post" enctype="multipart/form-data">
+  <form action="${pageContext.request.contextPath}/verify-signature" method="post" enctype="multipart/form-data">
     <input type="hidden" name="orderId" value="<%= order.getId() %>">
     <label for="signatureFile">📤 Hoặc chọn file chữ ký (.sig):</label>
     <input type="file" name="signatureFile" accept=".sig" required><br><br>

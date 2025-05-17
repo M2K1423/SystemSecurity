@@ -27,20 +27,6 @@ public class OrderSevices {
         this.invoiceDao = new InvoiceDao();
         this.shippingDao = new ShippingDao();
     }
-    private String generateOrderHash(int orderId, String customerName, double total, Date date) throws NoSuchAlgorithmException {
-        String orderData = orderId + customerName + total + date.toString();
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        return Base64.getEncoder().encodeToString(digest.digest(orderData.getBytes()));
-    }
-
-    private byte[] signData(byte[] data, PrivateKey privateKey) throws Exception {
-        Signature signature = Signature.getInstance("SHA256withRSA");
-        signature.initSign(privateKey);
-        signature.update(data);
-        return signature.sign();
-    }
-
-
     public int getTotalOrders() {
         return orderDao.totalOrderInLastedMonth();
     }
@@ -110,17 +96,19 @@ public class OrderSevices {
             shipping.setCarrier("J&T Express");
             shippingDao.insertShipping(shipping);
 
-            // ✅ Bước 6: Truy vấn lại Order từ DB để lấy createdAt chính xác
+            // ✅ Bước 6: Truy vấn lại Order để lấy ngày tạo thật
             Order order = orderDao.getOrderById(orderId);
-            if (order == null) throw new RuntimeException("Không lấy được đơn hàng sau khi tạo.");
+            if (order == null) throw new RuntimeException("Không tìm thấy đơn hàng sau khi tạo.");
 
-            // ✅ Bước 7: Sinh rawData + hash
+            // ✅ Bước 7: Tạo rawData (chuỗi cần ký) và hash
             String rawData = generateRawData(order.getId(), order.getCustomerName(), order.getTotalPrice(), order.getCreatedAt());
-            String hashValue = Base64.getEncoder().encodeToString(
-                    MessageDigest.getInstance("SHA-256").digest(rawData.getBytes(StandardCharsets.UTF_8))
+            byte[] rawDataBytes = rawData.getBytes(StandardCharsets.UTF_8);
+            String hashBase64 = Base64.getEncoder().encodeToString(
+                    MessageDigest.getInstance("SHA-256").digest(rawDataBytes)
             );
-            orderDao.updateOrderHash(orderId, hashValue);
-            System.out.println("✅ Mã hash đơn hàng #" + orderId + ": " + hashValue);
+            orderDao.updateOrderHash(orderId, hashBase64);
+            System.out.println("✅ Mã hash đơn hàng #" + orderId + ": " + hashBase64);
+            System.out.println("🔐 rawData = " + rawData);
 
             // ✅ Bước 8: Ký số
             try {
@@ -131,24 +119,19 @@ public class OrderSevices {
 
                 KeyStore keyStore = KeyStore.getInstance("PKCS12");
                 try (InputStream is = new FileInputStream(keystoreURL.getPath())) {
-                    keyStore.load(is, "keystorePassword".toCharArray()); // đổi nếu pass khác
+                    keyStore.load(is, "keystorePassword".toCharArray()); // sửa mật khẩu nếu khác
                 }
 
-                PrivateKey privateKey = (PrivateKey) keyStore.getKey("myalias", "keystorePassword".toCharArray());
-                X509Certificate cert = (X509Certificate) keyStore.getCertificate("myalias");
+                String alias = keyStore.aliases().nextElement();
+                PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, "keystorePassword".toCharArray());
+                X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
 
-                Signature signature = Signature.getInstance("SHA256withRSA");
-                signature.initSign(privateKey);
-                signature.update(rawData.getBytes(StandardCharsets.UTF_8));
-                byte[] digitalSignature = signature.sign();
-
-                String signatureBase64 = Base64.getEncoder().encodeToString(digitalSignature);
+                byte[] signatureBytes = signData(rawDataBytes, privateKey);
+                String signatureBase64 = Base64.getEncoder().encodeToString(signatureBytes);
                 String certBase64 = Base64.getEncoder().encodeToString(cert.getEncoded());
 
-                orderDao.updateDigitalSignature(orderId, signatureBase64, certBase64, hashValue);
+                orderDao.updateDigitalSignature(orderId, signatureBase64, certBase64, hashBase64);
                 System.out.println("✅ Đã lưu chữ ký số cho đơn hàng #" + orderId);
-                System.out.println("🔐 rawData = " + rawData);
-
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("❌ Lỗi khi ký số đơn hàng #" + orderId);
@@ -160,6 +143,15 @@ public class OrderSevices {
             e.printStackTrace();
             throw new RuntimeException("Đã xảy ra lỗi trong quá trình tạo hóa đơn và đơn hàng.", e);
         }
+    }
+
+
+
+    private byte[] signData(byte[] data, PrivateKey privateKey) throws Exception {
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initSign(privateKey);
+        signature.update(data);
+        return signature.sign();
     }
 
 

@@ -84,8 +84,11 @@ public class DigitalSignerApp extends JFrame {
             String password = JOptionPane.showInputDialog(this, "Nhập mật khẩu keystore:");
             if (password == null || password.isEmpty()) return;
 
-            byte[] data = Files.readAllBytes(inputFile.toPath());
+            // ✅ Đọc nội dung file rawData đơn hàng (ví dụ: "46phat1558000.002025-05-15")
+            String rawData = Files.readString(inputFile.toPath(), StandardCharsets.UTF_8).trim();
+            byte[] data = rawData.getBytes(StandardCharsets.UTF_8); // 👈 Ký rawData, không phải toàn bộ file
 
+            // ✅ Load keystore
             KeyStore ks = KeyStore.getInstance("PKCS12");
             try (InputStream is = new FileInputStream(keystoreFile)) {
                 ks.load(is, password.toCharArray());
@@ -94,26 +97,29 @@ public class DigitalSignerApp extends JFrame {
             String alias = ks.aliases().nextElement();
             PrivateKey privateKey = (PrivateKey) ks.getKey(alias, password.toCharArray());
 
+            // ✅ Ký rawData
             Signature signature = Signature.getInstance("SHA256withRSA");
             signature.initSign(privateKey);
             signature.update(data);
             byte[] signed = signature.sign();
             String signatureBase64 = Base64.getEncoder().encodeToString(signed);
 
+            // ✅ Ghi chữ ký vào file .sig
             File sigFile = new File(inputFile.getParent(), inputFile.getName() + ".sig");
             try (FileWriter fw = new FileWriter(sigFile)) {
                 fw.write(signatureBase64);
             }
 
-            // ✅ MỞ THƯ MỤC CHỨA FILE .sig
+            // ✅ Mở thư mục chứa file .sig
             Desktop.getDesktop().open(sigFile.getParentFile());
-
             outputArea.setText("✅ Đã ký và lưu file:\n" + sigFile.getAbsolutePath());
+
         } catch (Exception ex) {
             ex.printStackTrace();
             outputArea.setText("❌ Lỗi khi ký file: " + ex.getMessage());
         }
     }
+
 
 
     public static void main(String[] args) {

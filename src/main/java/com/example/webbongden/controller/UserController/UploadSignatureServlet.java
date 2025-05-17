@@ -141,7 +141,8 @@ public class UploadSignatureServlet extends HttpServlet {
             Signature sig = Signature.getInstance("SHA256withRSA");
             sig.initVerify(publicKey);
             System.out.println("Updating verifier with hash: " + Base64.getEncoder().encodeToString(hashBytes));
-            sig.update(hashBytes);
+            sig.update(rawData.getBytes(StandardCharsets.UTF_8)); // ✅ Dùng rawData gốc
+
             isValid = sig.verify(signatureBytes);
             System.out.println("Verification Result (Stored Hash): " + isValid);
 
@@ -149,21 +150,12 @@ public class UploadSignatureServlet extends HttpServlet {
             if (!isValid) {
                 System.out.println("Warning: Verification with stored hash failed. Trying with computed hash.");
                 sig.initVerify(publicKey);
-                sig.update(computedHash);
+                sig.update(rawData.getBytes(StandardCharsets.UTF_8)); // ✅ Dùng rawData gốc
+
                 isValid = sig.verify(signatureBytes);
                 System.out.println("Verification Result (Computed Hash): " + isValid);
             }
 
-            // Try with expected hash for order #43
-            if (!isValid && orderId == 43) {
-                String expectedHashBase64 = "vB3qRvjYTHJavK7vbXFxs0R1L6F3/+GXsVW3rfOKxGc=";
-                byte[] expectedHash = Base64.getDecoder().decode(expectedHashBase64);
-                sig.initVerify(publicKey);
-                System.out.println("Updating verifier with expected hash: " + expectedHashBase64);
-                sig.update(expectedHash);
-                isValid = sig.verify(signatureBytes);
-                System.out.println("Verification Result (Expected Hash): " + isValid);
-            }
 
             request.setAttribute("valid", isValid);
         } catch (CertificateException e) {

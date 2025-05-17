@@ -113,7 +113,8 @@ public class VerifySignatureServlet extends HttpServlet {
 
             // Verify with computed hash
             System.out.println("Updating verifier with computed hash: " + computedHashBase64);
-            verifier.update(computedHash);
+            verifier.update(rawData.getBytes(StandardCharsets.UTF_8));
+
             boolean isValid = verifier.verify(signatureBytes);
             System.out.println("Verification Result (Computed Hash): " + isValid);
 
@@ -124,7 +125,8 @@ public class VerifySignatureServlet extends HttpServlet {
                 System.out.println("Warning: Verification with computed hash failed. Trying with stored hash.");
                 System.out.println("Updating verifier with stored hash: " + storedHashBase64);
                 verifier.initVerify(publicKey);
-                verifier.update(storedHash);
+                verifier.update(rawData.getBytes(StandardCharsets.UTF_8));
+
                 isValid = verifier.verify(signatureBytes);
                 System.out.println("Verification Result (Stored Hash): " + isValid);
             }

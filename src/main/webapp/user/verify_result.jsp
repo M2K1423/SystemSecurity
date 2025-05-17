@@ -1,105 +1,89 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.example.webbongden.dao.model.Order" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-
-<%
-    Order order = (Order) request.getAttribute("order");
-    Boolean valid = (Boolean) request.getAttribute("valid");
-
-    // 🐞 DEBUG in ra valid (tùy chọn)
-    System.out.println("<p style='color: gray;'>[DEBUG] valid = " + valid + "</p>");
-
-    String error = (String) request.getAttribute("error");
-    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-%>
-
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>Kết quả xác minh chữ ký số</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/confirm-signature.css">
+    <title>Kết quả xác minh chữ ký</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
             padding: 30px;
+            background-color: #f4f6f8;
         }
 
-        .container {
-            background-color: white;
-            max-width: 650px;
-            margin: auto;
-            padding: 30px;
+        .card {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 25px;
         }
 
-        .order-info p {
-            margin: 6px 0;
+        h2 {
+            color: #333;
+            margin-bottom: 15px;
         }
 
-        .status {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-
-        .success {
+        .status.success {
             color: green;
+            font-weight: bold;
         }
 
-        .fail {
+        .status.fail {
             color: red;
+            font-weight: bold;
         }
 
-        .button-back {
+        .info {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #eef2f5;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+
+        .btn-back {
             display: inline-block;
-            margin-top: 25px;
-            padding: 10px 20px;
+            margin-top: 20px;
+            text-decoration: none;
             background-color: #007bff;
             color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            transition: background-color 0.3s ease;
+            padding: 10px 15px;
+            border-radius: 5px;
         }
 
-        .button-back:hover {
+        .btn-back:hover {
             background-color: #0056b3;
-        }
-
-        hr {
-            margin: 20px 0;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>KẾT QUẢ XÁC MINH CHỮ KÝ SỐ</h1>
+<div class="card">
+    <h2>Kết quả xác minh chữ ký đơn hàng</h2>
 
-    <% if (order != null) { %>
-    <div class="order-info">
-        <p><strong>Mã đơn hàng:</strong> #<%= order.getId() %></p>
-        <p><strong>Khách hàng:</strong> <%= order.getCustomerName() %></p>
-        <p><strong>Tổng tiền:</strong> <%= order.getTotalPrice() %> VND</p>
-        <p><strong>Ngày đặt:</strong> <%= sdf.format(order.getCreatedAt()) %></p>
-    </div>
+    <c:if test="${not empty error}">
+        <p class="status fail">❌ ${error}</p>
+    </c:if>
 
-    <hr/>
+    <c:if test="${not empty order}">
+        <div class="info">
+            <p><strong>ID đơn hàng:</strong> ${order.id}</p>
+            <p><strong>Tên khách hàng:</strong> ${order.customerName}</p>
+            <p><strong>Ngày đặt hàng:</strong> ${order.createdAt}</p>
+            <p><strong>Tổng tiền:</strong> ${order.totalPrice}</p>
+        </div>
 
-    <% if (error != null) { %>
-    <p class="status fail">❌ <%= error %></p>
-    <% } else if (valid != null && valid) { %>
-    <p class="status success">✅ Chữ ký HỢP LỆ - Chủ đơn hàng đã được xác thực.</p>
-    <% } else if (valid == null) { %>
-    <p class="status fail">⚠️ `valid` bị null - không có kết quả xác minh!</p>
-    <% } else { %>
-    <p class="status fail">❌ Chữ ký KHÔNG HỢP LỆ - Dữ liệu đã bị thay đổi hoặc chữ ký không trùng khớp.</p>
-    <% } %>
+        <c:choose>
+            <c:when test="${valid == true || signatureValid == true}">
+                <p class="status success">✅ Chữ ký HỢP LỆ - Dữ liệu đơn hàng KHÔNG bị thay đổi.</p>
+            </c:when>
+            <c:when test="${valid == false || signatureValid == false}">
+                <p class="status fail">❌ Chữ ký KHÔNG HỢP LỆ - Dữ liệu đã bị thay đổi hoặc chữ ký không đúng.</p>
+            </c:when>
+        </c:choose>
+    </c:if>
 
-    <% } else { %>
-    <p class="status fail">❌ Không có dữ liệu đơn hàng để xác minh.</p>
-    <% } %>
-
-    <a href="${pageContext.request.contextPath}/home" class="button-back">⬅ Quay lại trang chủ</a>
+    <a href="/user/orders.jsp" class="btn-back">← Quay lại danh sách đơn hàng</a>
 </div>
 </body>
 </html>
