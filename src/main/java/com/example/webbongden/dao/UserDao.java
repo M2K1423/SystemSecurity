@@ -233,6 +233,54 @@ public class UserDao {
         });
     }
 
+    public String getPublicKey(int customerId) {
+        String sql = """
+                    SELECT public_key 
+                    FROM public_keys 
+                    WHERE customer_id = :customerId AND revoked = TRUE
+                    ORDER BY date_updated 
+                    DESC LIMIT 1
+                    """;
+
+        return jdbi.withHandle(handle -> {
+            return handle.createQuery(sql)
+                .bind("customerId", customerId)
+                .mapTo(String.class)
+                .findOne()
+                .orElse(null); // Trả về null nếu không có kết quả
+
+        });
+    }
+
+    public boolean updatePublicKey(int customerId){
+        String sql = "UPDATE public_keys SET revoked = FALSE WHERE customer_id = :customer_id";
+
+        return jdbi.withHandle(handle ->{
+            return handle.createUpdate(sql)
+                    .bind("customer_id", customerId)
+                    .execute()>0;
+        });
+
+    }
+
+    public boolean addPublicKey(int customerId, String publicKey) {
+        String sql = "INSERT INTO public_keys (customer_id, public_key) VALUES (:customerId, :publicKey)";
+        try {
+            return jdbi.withHandle(handle -> {
+                int rowsAffected = handle.createUpdate(sql)
+                        .bind("customerId", customerId)
+                        .bind("publicKey", publicKey)
+                        .execute();
+                System.out.println("Rows affected by addPublicKey: " + rowsAffected); // Log
+                return rowsAffected > 0;
+            });
+        } catch (Exception e) {
+            System.err.println("Error in addPublicKey: " + e.getMessage()); // Log
+            e.printStackTrace();
+            return false; //Trả về false khi có lỗi
+        }
+    }
+
 
     public static void main(String[] args) {
         // Tạo một đối tượng UserDao

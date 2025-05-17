@@ -11,6 +11,7 @@ public class User {
     private String address; // Địa chỉ
     private Date createdAt; // Ngày đăng ký
     private List<Order> orderHistory; // Danh sách lịch sử mua hàng
+    private String publicKey;
 
     // Constructor tổng hợp
     public User(String customerId, String customerName, String email, String phone, String address, Date createdAt, List<Order> orderHistory) {
@@ -28,6 +29,14 @@ public class User {
         this.customerName = customerName;
         this.phone = phone;
         this.address = address;
+    }
+
+    public User(String customerId, String customerName, String phone, String address, String publicKey) {
+        this.customerId = customerId;
+        this.customerName = customerName;
+        this.phone = phone;
+        this.address = address;
+        this.publicKey = publicKey;
     }
 
     // Getter và Setter
@@ -86,6 +95,10 @@ public class User {
     public void setOrderHistory(List<Order> orderHistory) {
         this.orderHistory = orderHistory;
     }
+
+    public String getPublicKey() {return publicKey; }
+
+    public void setPublicKey(String publicKey) {this.publicKey = publicKey; }
 
     // Phương thức toString để hiển thị thông tin
     @Override

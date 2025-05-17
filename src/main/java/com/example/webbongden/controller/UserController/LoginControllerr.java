@@ -5,6 +5,7 @@ import com.example.webbongden.dao.model.Order;
 import com.example.webbongden.dao.model.User;
 import com.example.webbongden.services.AccountServices;
 import com.example.webbongden.services.OrderSevices;
+import com.example.webbongden.services.PublicKeyServices;
 import com.example.webbongden.services.UserSevices;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -18,6 +19,7 @@ public class LoginControllerr extends HttpServlet {
     private final AccountServices  accountService = new AccountServices();
     private final UserSevices userSevices = new UserSevices();
     private final OrderSevices orderSevices = new OrderSevices();
+    private final PublicKeyServices publicKeyServices = new PublicKeyServices();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -33,6 +35,7 @@ public class LoginControllerr extends HttpServlet {
         Account account = accountService.authenticate(username, password);
         User user = userSevices.getBasicInfoByUsername(username);
         List<Order> orders = orderSevices.getOrdersByUsername(username);
+        String publicKey = publicKeyServices.getPublicKey(Integer.parseInt(user.getCustomerId()));
         if (account != null) {
             // Lưu thông tin tài khoản vào session
             HttpSession session = request.getSession();
@@ -41,6 +44,7 @@ public class LoginControllerr extends HttpServlet {
             session.setAttribute("role", account.getRole());
             session.setAttribute("userInfo", user);
             session.setAttribute("orders", orders);
+            session.setAttribute("publicKey", publicKey);
 
             // Phân quyền và chuyển hướng
             if ("admin".equals(account.getRole())) {

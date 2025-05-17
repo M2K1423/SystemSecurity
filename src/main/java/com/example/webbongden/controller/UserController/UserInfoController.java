@@ -18,10 +18,13 @@ public class UserInfoController extends HttpServlet {
         if (session != null) {
             // Lấy thông tin tài khoản từ session
             Account account = (Account) session.getAttribute("account");
+            String publicKey = (String) session.getAttribute("publicKey");
 
             if (account != null) {
                 // Thêm thông tin tài khoản vào request để truyền xuống JSP
                 request.setAttribute("account", account);
+                // Thêm khoá công khai vào request để truyền xuống JSP
+                request.setAttribute("publicKey", publicKey);
             } else {
                 // Nếu không tìm thấy thông tin tài khoản trong session, chuyển hướng về trang login
                 response.sendRedirect("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
