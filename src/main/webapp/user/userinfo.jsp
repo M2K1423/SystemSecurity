@@ -193,7 +193,8 @@
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
                                 <th>Tải hóa đơn</th>
-                                <th>Xác thực</th> <!-- Cột mới -->
+                                <th>Xác thực</th>
+                                <th>Kiểm tra lại đơn hàng</th> <!-- Cột mới -->
                             </tr>
                             </thead>
                             <tbody>
@@ -201,7 +202,8 @@
                                 for (Order order : orders) {
                                     // Gọi phương thức kiểm tra ký số từ backend
                                     String orderId = String.valueOf(order.getId());
-                                    boolean isSigned = DigitalSignatureUtil.isInvoiceSigned(orderId); // ← Hàm giả lập
+                                    boolean isSigned = DigitalSignatureUtil.isInvoiceSigned(orderId);
+                                    boolean isVerified = Math.random() > 0.5; // tạm thời để random do chưa có backend xử lý kiểm tra
                             %>
                             <tr>
                                 <td><%= order.getId() %></td>
@@ -219,6 +221,13 @@
                                     <span class="badge badge-success">🔐 Đã ký</span>
                                     <% } else { %>
                                     <span class="badge badge-danger">❌ Chưa ký</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if (isVerified) { %>
+                                    <span class="badge badge-success">✅ Đã kiểm tra</span>
+                                    <% } else { %>
+                                    <span class="badge badge-danger">❌ Chưa kiểm tra</span>
                                     <% } %>
                                 </td>
                             </tr>
