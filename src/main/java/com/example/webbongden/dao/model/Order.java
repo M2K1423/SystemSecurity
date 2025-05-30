@@ -20,6 +20,7 @@ public class Order {
     private String digitalSignature;
     private String digitalCert;
     private String hashValue;
+    private boolean isSigned;
     // Constructors
     public Order() {
     }
@@ -174,5 +175,12 @@ public class Order {
 
     public void setDigitalCert(String digitalCert) {
         this.digitalCert = digitalCert;
+    }
+    public boolean isSigned() {
+        return isSigned;
+    }
+
+    public void setSigned(boolean signed) {
+        this.isSigned = signed;
     }
 }

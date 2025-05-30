@@ -1,5 +1,6 @@
 <%@ page import="com.example.webbongden.dao.model.Order" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="com.example.webbongden.utils.DigitalSignatureUtil" %><%--
   Created by IntelliJ IDEA.
   User: Admin
   Date: 12/15/2024
@@ -191,12 +192,16 @@
                                 <th>Ngày đặt</th>
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
-                                <th>Tải hóa đơn</th> <!-- Cột mới -->
+                                <th>Tải hóa đơn</th>
+                                <th>Xác thực</th> <!-- Cột mới -->
                             </tr>
                             </thead>
                             <tbody>
                             <%
                                 for (Order order : orders) {
+                                    // Gọi phương thức kiểm tra ký số từ backend
+                                    String orderId = String.valueOf(order.getId());
+                                    boolean isSigned = DigitalSignatureUtil.isInvoiceSigned(orderId); // ← Hàm giả lập
                             %>
                             <tr>
                                 <td><%= order.getId() %></td>
@@ -208,6 +213,13 @@
                                        class="btn btn-sm btn-outline-primary" target="_blank">
                                         Tải
                                     </a>
+                                </td>
+                                <td>
+                                    <% if (isSigned) { %>
+                                    <span class="badge badge-success">🔐 Đã ký</span>
+                                    <% } else { %>
+                                    <span class="badge badge-danger">❌ Chưa ký</span>
+                                    <% } %>
                                 </td>
                             </tr>
                             <%
@@ -223,7 +235,6 @@
                             }
                         %>
                     </div>
-
                 </div>
 
                 <!-- đổi mật khẩu -->

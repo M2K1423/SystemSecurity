@@ -8,6 +8,7 @@ import com.example.webbongden.dao.model.OrderDetail;
 import org.jdbi.v3.core.Jdbi;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 public class OrderDao {
@@ -17,6 +18,14 @@ public class OrderDao {
         jdbi = JDBIConnect.get();
     }
 
+    public void updateOrderSignedStatus(int orderId, boolean isSigned) {
+        jdbi.useHandle(handle -> {
+            handle.createUpdate("UPDATE orders SET is_signed = :isSigned WHERE id = :orderId")
+                    .bind("isSigned", isSigned)
+                    .bind("orderId", orderId)
+                    .execute();
+        });
+    }
     public void updateDigitalSignature(int orderId, String signatureBase64, String certBase64, String hashBase64) {
         String sql = "UPDATE orders SET digital_signature = :signature, digital_cert = :cert, hash_value = :hash WHERE id = :id";
         try {
