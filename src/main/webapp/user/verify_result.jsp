@@ -83,7 +83,7 @@
         </c:choose>
     </c:if>
 
-    <a href="/user/orders.jsp" class="btn-back">← Quay lại danh sách đơn hàng</a>
+    <a href="/user/userinfo.jsp.jsp" class="btn-back">← Quay lại danh sách đơn hàng</a>
 </div>
 </body>
 </html>
