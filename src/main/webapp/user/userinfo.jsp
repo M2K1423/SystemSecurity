@@ -1,4 +1,5 @@
 <%@ page import="com.example.webbongden.dao.model.Order" %>
+<%@ page import="com.example.webbongden.dao.model.Account" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.webbongden.utils.DigitalSignatureUtil" %><%--
   Created by IntelliJ IDEA.
@@ -181,7 +182,7 @@
                     </div>
 
                     <div class="order-table-container" id="orderTableContainer">
-                        <%
+                        <%  Account account = (Account) session.getAttribute("account");
                             List<Order> orders = (List<Order>) session.getAttribute("orders");
                             if (orders != null && !orders.isEmpty()) {
                         %>
@@ -192,7 +193,10 @@
                                 <th>Ngày đặt</th>
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
-                                <th>Tải hóa đơn</th>
+
+                                <th>Tải hóa đơn</th> <!-- Cột mới -->
+                                <th>Thay đổi đơn hàng</th>
+
                                 <th>Xác thực</th> <!-- Cột mới -->
                             </tr>
                             </thead>
@@ -214,6 +218,18 @@
                                         Tải
                                     </a>
                                 </td>
+
+                                <!-- Thay đổi thông tin đơn hàng-->
+                                <td>
+                                    <% if ("Pending".equalsIgnoreCase(order.getOrderStatus())) { %>
+                                        <a href="<%= request.getContextPath() %>/edit-order?orderId=<%= order.getId() %>&email=<%= account.getEmail() %>" class="btn btn-sm btn-warning">
+                                            Thay đổi
+                                        </a>
+                                    <% } else { %>
+                                        Không thể thay đổi
+                                    <% } %>
+                                </td>
+
                                 <td>
                                     <% if (isSigned) { %>
                                     <span class="badge badge-success">🔐 Đã ký</span>
