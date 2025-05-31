@@ -146,7 +146,9 @@ public class OrderSevices {
     }
 
 
-
+    public void updateOrderStatus(int orderId, boolean isSigned) {
+        orderDao.updateOrderSignedStatus(orderId, isSigned);
+    }
     private byte[] signData(byte[] data, PrivateKey privateKey) throws Exception {
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initSign(privateKey);

@@ -1,7 +1,8 @@
 package com.example.webbongden.controller.UserController;
 
-import com.example.webbongden.dao.OrderDao;
 import com.example.webbongden.dao.model.Order;
+import com.example.webbongden.services.OrderSevices;
+import com.example.webbongden.services.ProductServices;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,7 +28,12 @@ import java.util.TimeZone;
 @WebServlet("/verify-signature")
 @MultipartConfig
 public class VerifySignatureServlet extends HttpServlet {
-    private final OrderDao orderDao = new OrderDao();
+    private static final OrderSevices orderSevices;
+
+    static {
+        orderSevices = new OrderSevices();
+    }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -73,7 +79,7 @@ public class VerifySignatureServlet extends HttpServlet {
         }
 
         // Lấy đơn hàng
-        Order order = orderDao.getOrderById(orderId);
+        Order order = orderSevices.getOrderById(orderId);
         if (order == null || order.getDigitalCert() == null || order.getHashValue() == null) {
             req.setAttribute("error", "Không tìm thấy dữ liệu, thiếu chứng thư số hoặc hash.");
             req.getRequestDispatcher("/user/verify_order.jsp").forward(req, resp);
@@ -118,19 +124,30 @@ public class VerifySignatureServlet extends HttpServlet {
             boolean isValid = verifier.verify(signatureBytes);
             System.out.println("Verification Result (Computed Hash): " + isValid);
 
-            // If verification fails, try with stored hash
+
             if (!isValid) {
                 String storedHashBase64 = order.getHashValue();
+                if (storedHashBase64 == null || storedHashBase64.isEmpty()) {
+                    System.out.println("No stored hash available for fallback verification.");
+                    return;
+                }
+
                 byte[] storedHash = Base64.getDecoder().decode(storedHashBase64);
                 System.out.println("Warning: Verification with computed hash failed. Trying with stored hash.");
-                System.out.println("Updating verifier with stored hash: " + storedHashBase64);
+
+                // Reset lại đối tượng Signature
+                verifier = Signature.getInstance("SHA256withRSA"); // Tạo mới để tránh lỗi trạng thái cũ
                 verifier.initVerify(publicKey);
-                verifier.update(rawData.getBytes(StandardCharsets.UTF_8));
+                verifier.update(storedHash); // Dùng hash đã lưu
 
                 isValid = verifier.verify(signatureBytes);
                 System.out.println("Verification Result (Stored Hash): " + isValid);
             }
 
+            if (isValid) {
+                // Cập nhật trạng thái is_signed = TRUE trong database
+                orderSevices.updateOrderStatus(order.getId(), true);
+            }
             // Truyền kết quả về JSP
             req.setAttribute("order", order);
             req.setAttribute("valid", isValid);
