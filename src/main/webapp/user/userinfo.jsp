@@ -1,4 +1,5 @@
 <%@ page import="com.example.webbongden.dao.model.Order" %>
+<%@ page import="com.example.webbongden.dao.model.Account" %>
 <%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: Admin
@@ -180,7 +181,7 @@
                     </div>
 
                     <div class="order-table-container" id="orderTableContainer">
-                        <%
+                        <%  Account account = (Account) session.getAttribute("account");
                             List<Order> orders = (List<Order>) session.getAttribute("orders");
                             if (orders != null && !orders.isEmpty()) {
                         %>
@@ -192,6 +193,7 @@
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
                                 <th>Tải hóa đơn</th> <!-- Cột mới -->
+                                <th>Thay đổi đơn hàng</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -208,6 +210,16 @@
                                        class="btn btn-sm btn-outline-primary" target="_blank">
                                         Tải
                                     </a>
+                                </td>
+                                <!-- Thay đổi thông tin đơn hàng-->
+                                <td>
+                                    <% if ("Pending".equalsIgnoreCase(order.getOrderStatus())) { %>
+                                        <a href="<%= request.getContextPath() %>/edit-order?orderId=<%= order.getId() %>&email=<%= account.getEmail() %>" class="btn btn-sm btn-warning">
+                                            Thay đổi
+                                        </a>
+                                    <% } else { %>
+                                        Không thể thay đổi
+                                    <% } %>
                                 </td>
                             </tr>
                             <%
