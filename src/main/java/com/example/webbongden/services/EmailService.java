@@ -1,13 +1,10 @@
 package com.example.webbongden.services;
 
-import javax.mail.Session;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
+import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
 
 public class EmailService {
@@ -49,4 +46,46 @@ public class EmailService {
             throw e;
         }
     }
+
+    //gửi email theo định dạng html
+    public static void sendEmailHtml(String to, String subject, String htmlBody) throws MessagingException {
+        // Cấu hình thuộc tính email
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", SMTP_HOST);
+        properties.put("mail.smtp.port", SMTP_PORT);
+
+        // Tạo session
+        Session session = Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
+            }
+        });
+
+        try {
+            // Tạo message
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(SMTP_USERNAME));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject(subject);
+
+            // Gửi nội dung HTML
+            MimeBodyPart mimeBodyPart = new MimeBodyPart();
+            mimeBodyPart.setContent(htmlBody, "text/html; charset=utf-8");
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(mimeBodyPart);
+
+            message.setContent(multipart); // Gắn nội dung HTML vào email
+
+            Transport.send(message);
+            System.out.println("Email đã được gửi thành công đến: " + to);
+        } catch (MessagingException e) {
+            System.err.println("Có lỗi xảy ra khi gửi email: " + e.getMessage());
+            throw e;
+        }
+    }
+
 }
