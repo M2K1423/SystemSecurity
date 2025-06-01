@@ -60,7 +60,7 @@ public class DigitalSignerApp extends JFrame {
 
         // Chọn file hóa đơn
         JButton chooseFileBtn = createStyledButton("📄 Chọn file hóa đơn (.txt)", accentColor);
-        fileField = new JTextField(); fileField.setEditable(false); fileField.setFont(mainFont); fileField.setBackground(Color.WHITE);
+        fileField = new JTextField(); fileField.setEditable(true); fileField.setFont(mainFont); fileField.setBackground(Color.WHITE);
         chooseFileBtn.addActionListener(e -> chooseFile());
 
         // Drag & Drop cho file hóa đơn
@@ -68,14 +68,14 @@ public class DigitalSignerApp extends JFrame {
 
         // Chọn keystore
         JButton chooseKeystoreBtn = createStyledButton("🔐 Chọn keystore (.p12)", accentColor);
-        keystoreField = new JTextField(); keystoreField.setEditable(false); keystoreField.setFont(mainFont); keystoreField.setBackground(Color.WHITE);
+        keystoreField = new JTextField(); keystoreField.setEditable(true); keystoreField.setFont(mainFont); keystoreField.setBackground(Color.WHITE);
         chooseKeystoreBtn.addActionListener(e -> chooseKeystore());
 
         // Drag & Drop cho keystore
         addDragAndDrop(keystoreField, true);
 
         // Hiển thị đường dẫn .sig
-        sigPathField = new JTextField(); sigPathField.setEditable(false); sigPathField.setFont(mainFont.deriveFont(Font.ITALIC)); sigPathField.setBackground(bgColor);
+        sigPathField = new JTextField(); sigPathField.setEditable(true); sigPathField.setFont(mainFont.deriveFont(Font.ITALIC)); sigPathField.setBackground(bgColor);
         sigPathField.setBorder(BorderFactory.createTitledBorder("Đường dẫn file .sig"));
 
         // Thông tin chứng thư số
@@ -188,13 +188,12 @@ public class DigitalSignerApp extends JFrame {
 
     private void showCertInfo() {
         try {
-            String password = JOptionPane.showInputDialog(this, "Nhập mật khẩu keystore:");
-            if (password == null || password.isEmpty()) return;
+
 
             KeyStore ks = KeyStore.getInstance("PKCS12");
             try (InputStream is = new FileInputStream(keystoreFile)) {
-                ks.load(is, password.toCharArray());
-            }
+
+
 
             Enumeration<String> aliases = ks.aliases();
             while (aliases.hasMoreElements()) {
@@ -207,7 +206,7 @@ public class DigitalSignerApp extends JFrame {
                             x509.getSubjectDN().getName(),
                             sdf.format(x509.getNotBefore()),
                             sdf.format(x509.getNotAfter())));
-                    break;
+                    break;  }
                 }
             }
         } catch (Exception ex) {

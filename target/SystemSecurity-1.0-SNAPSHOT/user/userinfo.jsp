@@ -182,10 +182,10 @@
 
                     <div class="order-table-container" id="orderTableContainer">
                         <%
-                            List<Order> orders = (List<Order>) session.getAttribute("orders");
+                            List<Order> orders = (List<Order>) request.getAttribute("orders");
                             if (orders != null && !orders.isEmpty()) {
                         %>
-                        <table class="order-table">
+                        <table class="order-table" border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">
                             <thead>
                             <tr>
                                 <th>Id</th>
@@ -193,15 +193,12 @@
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
                                 <th>Tải hóa đơn</th>
-                                <th>Xác thực</th> <!-- Cột mới -->
+                                <th>Xác thực</th>
                             </tr>
                             </thead>
                             <tbody>
                             <%
                                 for (Order order : orders) {
-                                    // Gọi phương thức kiểm tra ký số từ backend
-                                    String orderId = String.valueOf(order.getId());
-                                    boolean isSigned = DigitalSignatureUtil.isInvoiceSigned(orderId); // ← Hàm giả lập
                             %>
                             <tr>
                                 <td><%= order.getId() %></td>
@@ -215,8 +212,11 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <% if (isSigned) { %>
-                                    <span class="badge badge-success">🔐 Đã ký</span>
+                                    <%
+                                        System.out.println("Order ID: " + order.getId() + ", isSigned: " + order.isSigned());
+                                    %>
+                                    <% if (order.isSigned()) { %>
+                                    <span class="badge badge-success">✅ Đã ký</span>
                                     <% } else { %>
                                     <span class="badge badge-danger">❌ Chưa ký</span>
                                     <% } %>
@@ -234,6 +234,7 @@
                         <%
                             }
                         %>
+
                     </div>
                 </div>
 

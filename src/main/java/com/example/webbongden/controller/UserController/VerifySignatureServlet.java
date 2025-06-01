@@ -124,6 +124,12 @@ public class VerifySignatureServlet extends HttpServlet {
             boolean isValid = verifier.verify(signatureBytes);
             System.out.println("Verification Result (Computed Hash): " + isValid);
 
+            if (isValid) {
+                order = orderSevices.getOrderById(order.getId());
+
+                orderSevices.updateOrderStatus(order.getId(), true);
+
+            }
 
             if (!isValid) {
                 String storedHashBase64 = order.getHashValue();
@@ -144,10 +150,6 @@ public class VerifySignatureServlet extends HttpServlet {
                 System.out.println("Verification Result (Stored Hash): " + isValid);
             }
 
-            if (isValid) {
-                // Cập nhật trạng thái is_signed = TRUE trong database
-                orderSevices.updateOrderStatus(order.getId(), true);
-            }
             // Truyền kết quả về JSP
             req.setAttribute("order", order);
             req.setAttribute("valid", isValid);
