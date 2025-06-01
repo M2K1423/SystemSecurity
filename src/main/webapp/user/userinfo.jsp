@@ -1,6 +1,8 @@
 <%@ page import="com.example.webbongden.dao.model.Order" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.example.webbongden.utils.DigitalSignatureUtil" %><%--
+<%@ page import="com.example.webbongden.utils.DigitalSignatureUtil" %>
+<%@ page import="com.example.webbongden.utils.CheckOrder" %>
+<%@ page import="com.example.webbongden.utils.CheckOrder" %><%--
   Created by IntelliJ IDEA.
   User: Admin
   Date: 12/15/2024
@@ -203,7 +205,12 @@
                                     // Gọi phương thức kiểm tra ký số từ backend
                                     String orderId = String.valueOf(order.getId());
                                     boolean isSigned = DigitalSignatureUtil.isInvoiceSigned(orderId);
-                                    boolean isVerified = Math.random() > 0.5; // tạm thời để random do chưa có backend xử lý kiểm tra
+                                    boolean isVerified = false; // tạm thời để random do chưa có backend xử lý kiểm tra
+                                    try {
+                                        isVerified = CheckOrder.checkOrder(order);
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
                             %>
                             <tr>
                                 <td><%= order.getId() %></td>
