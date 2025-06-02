@@ -1,5 +1,7 @@
 package com.example.webbongden.dao.model;
 
+import com.example.webbongden.dao.OrderDao;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
@@ -38,12 +40,42 @@ public class Order {
         this.digitalSignature = digitalSignature;
         this.digitalCert = digitalCert;
     }
+    public Order(int id, String customerName, Date createdAt, double totalPrice,
+                 String address, String orderStatus, List<OrderDetail> orderDetails,
+                 double shippingFee, String shippingMethod, int accountId, String note,
+                 String digitalSignature, String digitalCert, String hashValue, boolean isSigned) {
+        this.id = id;
+        this.customerName = customerName;
+        this.createdAt = createdAt;
+        this.totalPrice = totalPrice;
+        this.address = address;
+        this.orderStatus = orderStatus;
+        this.orderDetails = orderDetails;
+        this.shippingFee = shippingFee;
+        this.shippingMethod = shippingMethod;
+        this.accountId = accountId;
+        this.note = note;
+        this.digitalSignature = digitalSignature;
+        this.digitalCert = digitalCert;
+        this.hashValue = hashValue;
+        this.isSigned = isSigned;
+    }
 
     public Order(int id, String customerName, java.util.Date createdAt, String orderStatus) {
         this.id = id;
         this.customerName = customerName;
         this.createdAt = createdAt;
         this.orderStatus = orderStatus;
+    }
+    public Order(int id, String customerName, Date createdAt, double totalPrice,
+                 String address, String orderStatus, boolean isSigned) {
+        this.id = id;
+        this.customerName = customerName;
+        this.createdAt = createdAt;
+        this.totalPrice = totalPrice;
+        this.address = address;
+        this.orderStatus = orderStatus;
+        this.isSigned = isSigned;
     }
 
     public Order(int id, String customerName, java.util.Date createdAt, double totalPrice,
@@ -56,6 +88,7 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderDetails = orderDetails;
     }
+
     public String getHashValue() {
         return hashValue;
     }
@@ -176,11 +209,32 @@ public class Order {
     public void setDigitalCert(String digitalCert) {
         this.digitalCert = digitalCert;
     }
+
+
     public boolean isSigned() {
         return isSigned;
     }
 
-    public void setSigned(boolean signed) {
-        this.isSigned = signed;
+    public void setSigned(boolean isSigned) {
+        this.isSigned = isSigned;
     }
+    public static void main(String[] args) {
+        OrderDao orderDao = new OrderDao();
+
+        // Lấy danh sách đơn hàng
+        List<Order> orders = orderDao.getListOrders();
+
+        // Duyệt và in giá trị isSigned
+        for (Order order : orders) {
+            System.out.println("Order ID: " + order.getId() + ", isSigned: " + order.isSigned());
+
+            // Kiểm tra trực tiếp boolean isSigned
+            if (order.isSigned()) {
+                System.out.println("Đơn hàng " + order.getId() + " đã được ký.");
+            } else {
+                System.out.println("Đơn hàng " + order.getId() + " chưa được ký.");
+            }
+        }
+    }
+
 }

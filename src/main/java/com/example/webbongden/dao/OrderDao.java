@@ -8,6 +8,7 @@ import com.example.webbongden.dao.model.OrderDetail;
 import org.jdbi.v3.core.Jdbi;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -18,14 +19,17 @@ public class OrderDao {
         jdbi = JDBIConnect.get();
     }
 
-    public void updateOrderSignedStatus(int orderId, boolean isSigned) {
+    public void updateOrderStatus(int orderId, boolean isSigned) {
         jdbi.useHandle(handle -> {
-            handle.createUpdate("UPDATE orders SET is_signed = :isSigned WHERE id = :orderId")
+            String sql = "UPDATE orders SET is_signed = :isSigned WHERE id = :orderId";
+            int rowsAffected = handle.createUpdate(sql)
                     .bind("isSigned", isSigned)
                     .bind("orderId", orderId)
                     .execute();
+            System.out.println("Rows affected: " + rowsAffected);
         });
     }
+
     public void updateDigitalSignature(int orderId, String signatureBase64, String certBase64, String hashBase64) {
         String sql = "UPDATE orders SET digital_signature = :signature, digital_cert = :cert, hash_value = :hash WHERE id = :id";
         try {
@@ -51,16 +55,26 @@ public class OrderDao {
         );
     }
 
+
     public Order getOrderById(int orderId) {
-        String sql = "SELECT o.id AS orderId, o.created_at AS orderDate, o.total_price AS totalPrice, " +
-                "o.order_status AS orderStatus, o.hash_value AS hashValue, " +
-                "o.digital_cert AS digitalCert, o.digital_signature AS digitalSignature, " +
-                "c.cus_name AS customerName, s.address AS shippingAddress " +
-                "FROM orders o " +
-                "JOIN accounts a ON o.account_id = a.id " +
-                "JOIN customers c ON a.customer_id = c.id " +
-                "JOIN shipping s ON o.id = s.order_id " +
-                "WHERE o.id = :orderId";
+        String sql = """
+        SELECT
+            o.id AS orderId,
+            o.created_at AS orderDate,
+            o.total_price AS totalPrice,
+            o.order_status AS orderStatus,
+            o.hash_value AS hashValue,
+            o.digital_cert AS digitalCert,
+            o.digital_signature AS digitalSignature,
+            o.is_signed, -- Không alias, giữ nguyên tên cột gốc
+            c.cus_name AS customerName,
+            s.address AS shippingAddress
+        FROM orders o
+        JOIN accounts a ON o.account_id = a.id
+        JOIN customers c ON a.customer_id = c.id
+        JOIN shipping s ON o.id = s.order_id
+        WHERE o.id = :orderId
+        """;
 
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
@@ -72,16 +86,23 @@ public class OrderDao {
                             order.setTotalPrice(rs.getDouble("totalPrice"));
                             order.setOrderStatus(rs.getString("orderStatus"));
                             order.setHashValue(rs.getString("hashValue"));
-                            order.setDigitalCert(rs.getString("digitalCert")); // ✅
-                            order.setDigitalSignature(rs.getString("digitalSignature")); // ✅
+                            order.setDigitalCert(rs.getString("digitalCert"));
+                            order.setDigitalSignature(rs.getString("digitalSignature"));
                             order.setCustomerName(rs.getString("customerName"));
                             order.setAddress(rs.getString("shippingAddress"));
+
+                            // Lấy đúng cột is_signed không alias
+                            boolean isSigned = rs.getBoolean("is_signed");
+                            System.out.println("Debug getOrderById - orderId=" + order.getId() + ", isSigned=" + isSigned);
+                            order.setSigned(isSigned);
+
                             return order;
                         })
                         .findOne()
                         .orElse(null)
         );
     }
+
 
 
 
@@ -149,29 +170,40 @@ public class OrderDao {
     }
 
     public List<Order> getListOrders() {
+        System.out.println("getListOrders() called");
         String sql = "SELECT o.id AS orderId, c.cus_name AS customerName, " +
                 "o.created_at AS orderDate, " +
                 "o.total_price AS totalPrice, " +
-                "s.address AS shippingAddress, o.order_status AS status " + // Lấy địa chỉ từ bảng shipping
+                "s.address AS shippingAddress, o.order_status AS status, o.is_signed AS isSigned " +
                 "FROM orders o " +
                 "JOIN accounts a ON o.account_id = a.id " +
                 "JOIN customers c ON a.customer_id = c.id " +
-                "JOIN shipping s ON o.id = s.order_id"; // Kết hợp bảng shipping
+                "JOIN shipping s ON o.id = s.order_id";
 
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
-                        .map((rs, ctx) -> new Order(
-                                rs.getInt("orderId"),
-                                rs.getString("customerName"),
-                                rs.getDate("orderDate"),
-                                rs.getDouble("totalPrice"), // Sử dụng getDouble
-                                rs.getString("shippingAddress"), // Lấy địa chỉ vận chuyển từ bảng shipping
-                                rs.getString("status"),
-                                getOrderDetailsByOrderId(rs.getInt("orderId")) // Lấy danh sách chi tiết đơn hàng
-                        ))
+                        .map((rs, ctx) -> {
+                            Order order = new Order(
+                                    rs.getInt("orderId"),
+                                    rs.getString("customerName"),
+                                    rs.getDate("orderDate"),
+                                    rs.getDouble("totalPrice"),
+                                    rs.getString("shippingAddress"),
+                                    rs.getString("status"),
+                                    getOrderDetailsByOrderId(rs.getInt("orderId"))
+                            );
+
+                            boolean isSigned = rs.getBoolean("isSigned");
+                            System.out.println("Debug orderId=" + rs.getInt("orderId") + ", isSigned=" + isSigned);
+                            order.setSigned(isSigned);
+
+                            return order;
+                        })
                         .list()
         );
     }
+
+
 
 
     // Lấy danh sách chi tiết đơn hàng theo orderId
@@ -358,27 +390,22 @@ public class OrderDao {
 
 
     public static void main(String[] args) {
-        // Tạo một đối tượng UserDao (được giả định là chứa phương thức getOrdersByUsername)
-        OrderDao userDao = new OrderDao();
+        OrderDao orderDao = new OrderDao();
 
-        // Nhập tên đăng nhập cần kiểm tra
-        String username = "pvp1292004";
+        List<Order> orders = orderDao.getListOrders();
 
-        // Gọi phương thức getOrdersByUsername
-        List<Order> orders = userDao.getOrdersByUsername(username);
-
-        // In thông tin kết quả
         if (orders != null && !orders.isEmpty()) {
-            System.out.println("Danh sách đơn hàng của tài khoản username: " + username);
+            System.out.println("Danh sách đơn hàng:");
             for (Order order : orders) {
-                System.out.println("ID Đơn hàng: " + order.getId());
-                System.out.println("Ngày đặt hàng: " + order.getCreatedAt());
-                System.out.println("Tổng tiền: " + order.getTotalPrice());
-                System.out.println("Trạng thái: " + order.getOrderStatus());
-                System.out.println("-----------------------------------------");
+                System.out.println("Order ID: " + order.getId() +
+                        ", Customer: " + order.getCustomerName() +
+                        ", Created At: " + order.getCreatedAt() +
+                        ", Total Price: " + order.getTotalPrice() +
+                        ", Status: " + order.getOrderStatus() +
+                        ", Is Signed: " + order.isSigned());
             }
         } else {
-            System.out.println("Không tìm thấy đơn hàng nào cho tài khoản username: " + username);
+            System.out.println("Không có đơn hàng nào.");
         }
     }
 }
