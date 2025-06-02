@@ -1,7 +1,9 @@
 <%@ page import="com.example.webbongden.dao.model.Order" %>
 <%@ page import="com.example.webbongden.dao.model.Account" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.example.webbongden.utils.DigitalSignatureUtil" %><%--
+<%@ page import="com.example.webbongden.utils.DigitalSignatureUtil" %>
+<%@ page import="com.example.webbongden.utils.CheckOrder" %>
+<%@ page import="com.example.webbongden.utils.CheckOrder" %><%--
   Created by IntelliJ IDEA.
   User: Admin
   Date: 12/15/2024
@@ -186,18 +188,17 @@
                             List<Order> orders = (List<Order>) session.getAttribute("orders");
                             if (orders != null && !orders.isEmpty()) {
                         %>
-                        <table class="order-table">
+                        <table class="order-table" border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">
                             <thead>
                             <tr>
                                 <th>Id</th>
                                 <th>Ngày đặt</th>
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
-
-                                <th>Tải hóa đơn</th> <!-- Cột mới -->
+                                <th>Tải hóa đơn</th>
+                                <th>Xác thực</th>
+                                <th>Kiểm tra lại đơn hàng</th> <!-- Cột mới -->
                                 <th>Thay đổi đơn hàng</th>
-
-                                <th>Xác thực</th> <!-- Cột mới -->
                             </tr>
                             </thead>
                             <tbody>
@@ -205,7 +206,13 @@
                                 for (Order order : orders) {
                                     // Gọi phương thức kiểm tra ký số từ backend
                                     String orderId = String.valueOf(order.getId());
-                                    boolean isSigned = DigitalSignatureUtil.isInvoiceSigned(orderId); // ← Hàm giả lập
+                                    boolean isSigned = DigitalSignatureUtil.isInvoiceSigned(orderId);
+                                    boolean isVerified = false; // tạm thời để random do chưa có backend xử lý kiểm tra
+                                    try {
+                                        isVerified = CheckOrder.checkOrder(order);
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
                             %>
                             <tr>
                                 <td><%= order.getId() %></td>
@@ -231,10 +238,20 @@
                                 </td>
 
                                 <td>
-                                    <% if (isSigned) { %>
-                                    <span class="badge badge-success">🔐 Đã ký</span>
+                                    <%
+                                        System.out.println("Order ID: " + order.getId() + ", isSigned: " + order.isSigned());
+                                    %>
+                                    <% if (order.isSigned()) { %>
+                                    <span class="badge badge-success">✅ Đã ký</span>
                                     <% } else { %>
                                     <span class="badge badge-danger">❌ Chưa ký</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if (isVerified) { %>
+                                    <span class="badge badge-success">✅ Đã kiểm tra</span>
+                                    <% } else { %>
+                                    <span class="badge badge-danger">❌ Chưa kiểm tra</span>
                                     <% } %>
                                 </td>
                             </tr>
@@ -250,6 +267,7 @@
                         <%
                             }
                         %>
+
                     </div>
                 </div>
 

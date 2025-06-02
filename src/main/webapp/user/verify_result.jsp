@@ -74,10 +74,10 @@
         </div>
 
         <c:choose>
-            <c:when test="${valid == true || signatureValid == true}">
+            <c:when test="${valid == true }">
                 <p class="status success">✅ Chữ ký HỢP LỆ - Dữ liệu đơn hàng KHÔNG bị thay đổi.</p>
             </c:when>
-            <c:when test="${valid == false || signatureValid == false}">
+            <c:when test="${valid == false && signatureValid == false}">
                 <p class="status fail">❌ Chữ ký KHÔNG HỢP LỆ - Dữ liệu đã bị thay đổi hoặc chữ ký không đúng.</p>
             </c:when>
         </c:choose>
