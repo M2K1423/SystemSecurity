@@ -202,15 +202,14 @@
                             <tbody>
                             <%
                                 for (Order order : orders) {
-                                    // Gọi phương thức kiểm tra ký số từ backend
-                                    String orderId = String.valueOf(order.getId());
-                                    boolean isSigned = DigitalSignatureUtil.isInvoiceSigned(orderId);
-                                    boolean isVerified = false; // tạm thời để random do chưa có backend xử lý kiểm tra
-                                    try {
-                                        isVerified = CheckOrder.checkOrder(order);
-                                    } catch (Exception e) {
-                                        throw new RuntimeException(e);
-                                    }
+//                                    // Gọi phương thức kiểm tra ký số từ backend
+//                                    String orderId = String.valueOf(order.getId());
+//                                    boolean isVerified = false; // tạm thời để random do chưa có backend xử lý kiểm tra
+//                                    try {
+//                                        isVerified = CheckOrder.checkOrder(order);
+//                                    } catch (Exception e) {
+//                                        throw new RuntimeException(e);
+//                                    }
                             %>
                             <tr>
                                 <td><%= order.getId() %></td>
@@ -234,7 +233,7 @@
                                     <% } %>
                                 </td>
                                 <td>
-                                    <% if (isVerified) { %>
+                                    <% if (order.isValid()) { %>
                                     <span class="badge badge-success">✅ Đã kiểm tra</span>
                                     <% } else { %>
                                     <span class="badge badge-danger">❌ Chưa kiểm tra</span>
