@@ -23,6 +23,16 @@ public class Order {
     private String digitalCert;
     private String hashValue;
     private boolean isSigned;
+    private boolean valid; // Biến để kiểm tra tính hợp lệ của chữ ký
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
     // Constructors
     public Order() {
     }
