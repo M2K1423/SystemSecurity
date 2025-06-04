@@ -1,4 +1,5 @@
 <%@ page import="com.example.webbongden.dao.model.Order" %>
+<%@ page import="com.example.webbongden.dao.model.Account" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.webbongden.utils.DigitalSignatureUtil" %>
 <%@ page import="com.example.webbongden.utils.CheckOrder" %>
@@ -183,8 +184,8 @@
                     </div>
 
                     <div class="order-table-container" id="orderTableContainer">
-                        <%
-                            List<Order> orders = (List<Order>) request.getAttribute("orders");
+                        <%  Account account = (Account) session.getAttribute("account");
+                            List<Order> orders = (List<Order>) session.getAttribute("orders");
                             if (orders != null && !orders.isEmpty()) {
                         %>
                         <table class="order-table" border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">
@@ -197,6 +198,7 @@
                                 <th>Tải hóa đơn</th>
                                 <th>Xác thực</th>
                                 <th>Kiểm tra lại đơn hàng</th> <!-- Cột mới -->
+                                <th>Thay đổi đơn hàng</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -223,6 +225,18 @@
                                         Tải
                                     </a>
                                 </td>
+
+                                <!-- Thay đổi thông tin đơn hàng-->
+                                <td>
+                                    <% if ("Pending".equalsIgnoreCase(order.getOrderStatus())) { %>
+                                        <a href="<%= request.getContextPath() %>/edit-order?orderId=<%= order.getId() %>&email=<%= account.getEmail() %>" class="btn btn-sm btn-warning">
+                                            Thay đổi
+                                        </a>
+                                    <% } else { %>
+                                        Không thể thay đổi
+                                    <% } %>
+                                </td>
+
                                 <td>
                                     <%
                                         System.out.println("Order ID: " + order.getId() + ", isSigned: " + order.isSigned());
