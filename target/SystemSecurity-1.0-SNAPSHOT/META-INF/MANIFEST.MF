@@ -2,4 +2,20 @@ Manifest-Version: 1.0
 Created-By: IntelliJ IDEA
 Built-By: PHAN PHAT
 Build-Jdk: 23.0.1
+Main-Class: com.example.Main
+Class-Path: jakarta.servlet-api-6.1.0.jar jakarta.servlet.jsp.jstl-api-3
+ .0.1.jar jakarta.el-api-5.0.0.jar jakarta.servlet.jsp.jstl-3.0.1.jar my
+ sql-connector-j-8.3.0.jar protobuf-java-3.25.1.jar jdbi3-core-3.47.0.ja
+ r slf4j-api-1.7.36.jar geantyref-2.0.0.jar cassandra-all-0.8.1.jar guav
+ a-r08.jar commons-cli-1.1.jar commons-codec-1.2.jar commons-collections
+ -3.2.1.jar commons-lang-2.4.jar concurrentlinkedhashmap-lru-1.1.jar ant
+ lr-3.2.jar antlr-runtime-3.2.jar stringtemplate-3.2.jar antlr-2.7.7.jar
+  avro-1.4.0-cassandra-1.jar jetty-6.1.22.jar jetty-util-6.1.22.jar serv
+ let-api-2.5-20081211.jar jackson-core-asl-1.4.0.jar jackson-mapper-asl-
+ 1.4.0.jar jline-0.9.94.jar json-simple-1.1.jar high-scale-lib-1.1.2.jar
+  snakeyaml-1.6.jar libthrift-0.6.1.jar junit-4.4.jar servlet-api-2.5.ja
+ r httpclient-4.0.1.jar httpcore-4.0.1.jar commons-logging-1.1.1.jar cas
+ sandra-thrift-0.8.1.jar jamm-0.2.2.jar logback-classic-1.4.11.jar logba
+ ck-core-1.4.11.jar gson-2.10.1.jar jbcrypt-0.4.jar javax.mail-1.6.2.jar
+  activation-1.1.jar
 
