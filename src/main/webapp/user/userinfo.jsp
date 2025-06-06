@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/header-footer.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/reset.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/user.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/overlay.css">
 </head>
 <style>
     .key-btn button,
@@ -196,9 +197,9 @@
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
                                 <th>Tải hóa đơn</th>
+                                <th>Chi tiết đơn hàng</th>
                                 <th>Xác thực</th>
                                 <th>Kiểm tra lại đơn hàng</th> <!-- Cột mới -->
-                                <th>Thay đổi đơn hàng</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -227,13 +228,7 @@
 
                                 <!-- Thay đổi thông tin đơn hàng-->
                                 <td>
-                                    <% if ("Pending".equalsIgnoreCase(order.getOrderStatus())) { %>
-                                        <a href="<%= request.getContextPath() %>/edit-order?orderId=<%= order.getId() %>&email=<%= account.getEmail() %>" class="btn btn-sm btn-warning">
-                                            Thay đổi
-                                        </a>
-                                    <% } else { %>
-                                        Không thể thay đổi
-                                    <% } %>
+                                    <button class="change-order-btn" data-id="<%= order.getId() %>">Xem chi tiết</button>
                                 </td>
 
                                 <td>
@@ -267,6 +262,76 @@
                             }
                         %>
 
+                    </div>
+                </div>
+                <!-- chi tiet don hang --!>
+                <div class="overlay">
+                    <div class="invoice-details">
+                        <div class="invoice-header">
+                            <p>CHI TIẾT ĐƠN HÀNG</p>
+                            <div class="close-icon" id="close-invoice-details">
+                                <i class="fa-solid fa-xmark"></i>
+                            </div>
+                        </div>
+                        <p style="padding-bottom:10px">
+                            Mã đơn hàng: <span id="order_id">N/A</span>
+                        </p>
+                        <p style="padding-bottom:10px">
+                            Ngày tạo: <span id="create_at">N/A</span>
+                        <p>
+                        <p style="padding-bottom:10px">
+                            Hình thức giao hàng: <span id="form_of_delivery">N/A</span>
+                        </p>
+                        <p style="padding-bottom:10px">
+                            Phí giao hàng: <span id="delivery_fee"></span>
+                        </p>
+                        <p style="border-bottom: 1px solid #dadada; padding-bottom:10px">
+                            Ghi chú: <span id="note"></span>
+                        </p>
+                        <div class="customer-info-invoice">
+                            <p>THÔNG TIN KHÁCH HÀNG</p>
+                            <p>
+                                <strong>Tên:</strong>
+                                <span id="customer-name">N/A</span>
+                            </p>
+                            <p>
+                                <strong>Địa chỉ:</strong>
+                                <span id="customer-address">N/A</span>
+                            </p>
+                            <p>
+                                <strong>Số điện thoại:</strong>
+                                <span id="customer-phone">N/A</span>
+                            </p>
+                        </div>
+
+                        <div class="order-items">
+                            <h4>SẢN PHẨM MUA</h4>
+                            <table class="items-table">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên SP</th>
+                                    <th>Số Lượng</th>
+                                    <th>Đơn Giá</th>
+                                    <th>Thành Tiền</th>
+                                </tr>
+                                </thead>
+                                <tbody id="order-items-body">
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="total-price">
+                            <p>
+                                <strong>TỔNG TIỀN:</strong>
+                                <span id="total-amount">0 VND</span>
+                            </p>
+                        </div>
+                        <!-- Nút thay đổi đơn hàng, ẩn ban đầu -->
+                        <div class="edit-order-wrapper">
+                            <button id="edit-order-btn">Thay đổi đơn hàng</button>
+                        </div>
                     </div>
                 </div>
 
@@ -322,6 +387,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="${pageContext.request.contextPath}/assets/Js/user.js?v=2.0" defer></script>
+<script src="${pageContext.request.contextPath}/assets/Js/order_detail.js?v=2.0" defer></script>
 <script>
     document.getElementById('edit-info').addEventListener('click', function () {
         // Lấy tất cả các input cần chỉnh sửa
