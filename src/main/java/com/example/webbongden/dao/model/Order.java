@@ -228,22 +228,24 @@ public class Order {
     public void setSigned(boolean isSigned) {
         this.isSigned = isSigned;
     }
+    public Order(int id, String customerName, Date createdAt, String orderStatus, boolean isSigned) {
+        this.id = id;
+        this.customerName = customerName;
+        this.createdAt = createdAt;
+        this.orderStatus = orderStatus;
+        this.isSigned = isSigned;
+    }
+
     public static void main(String[] args) {
-        OrderDao orderDao = new OrderDao();
+        OrderDao orderDao = new OrderDao(); // Giả sử class đã có và kết nối DB đúng
 
-        // Lấy danh sách đơn hàng
-        List<Order> orders = orderDao.getListOrders();
+        List<Order> orders = orderDao.getListOrders(); // Lấy toàn bộ đơn hàng từ DB
 
-        // Duyệt và in giá trị isSigned
         for (Order order : orders) {
-            System.out.println("Order ID: " + order.getId() + ", isSigned: " + order.isSigned());
-
-            // Kiểm tra trực tiếp boolean isSigned
-            if (order.isSigned()) {
-                System.out.println("Đơn hàng " + order.getId() + " đã được ký.");
-            } else {
-                System.out.println("Đơn hàng " + order.getId() + " chưa được ký.");
-            }
+            System.out.println("Order ID: " + order.getId() +
+                    " | Customer: " + order.getCustomerName() +
+                    " | isSigned: " + order.isSigned() +
+                    " | Status: " + (order.isSigned() ? "Đã ký" : "Chưa ký"));
         }
     }
 
