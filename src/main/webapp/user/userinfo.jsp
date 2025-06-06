@@ -196,9 +196,9 @@
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
                                 <th>Tải hóa đơn</th>
-                                <th>Xác thực</th>
-                                <th>Kiểm tra lại đơn hàng</th> <!-- Cột mới -->
-                                <th>Thay đổi đơn hàng</th>
+                                <th>Thay đổi</th>
+                                <th>Xác thức</th> <!-- Cột mới -->
+                                <th>Kểm tra lại đơn hàng</th>
                             </tr>
                             </thead>
                             <tbody>
