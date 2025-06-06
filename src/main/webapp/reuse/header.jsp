@@ -142,6 +142,8 @@
             <li><a href="News.html">TIN TỨC</a></li>
             <li><a href="Contact.html">LIÊN HỆ</a></li>
             <li><a href="https://drive.google.com/uc?export=download&id=1xPcsJ7fLu6Znur8eehye6G2iqvG-Yrsp">TẢI ỨNG DỤNG</a><li>
+            <li><a href="https://drive.google.com/uc?export=download&id=1dWRiMQDHrvB7bqYzksNxVGURNFq4cvd6
+">Tải tool kí xác thực </a></li>
         </ul>
     </nav>
 </header>
