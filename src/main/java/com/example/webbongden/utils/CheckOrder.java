@@ -19,7 +19,7 @@ public class CheckOrder {
 
     public static String getPublickey(Order order) {
         PublicKeyServices publicKeyServices = new PublicKeyServices();
-        return publicKeyServices.getPublicKey(order.getAccountId());
+        return publicKeyServices.getPublicKey(order.getAccountId()).getPublicKey();
     }
 
     public static PublicKey decodePublicKey(String base64PublicKey) throws Exception {

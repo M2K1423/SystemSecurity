@@ -402,11 +402,7 @@
     document.getElementById('save-publicKey').addEventListener('click', function (e) {
         e.preventDefault();
 
-        // Lấy ID khách hàng từ thuộc tính data
-        const customerId = document.getElementById('userInfo').getAttribute('data-customer-id');
-
         const formData = {
-            customerId: customerId,
             publicKey: document.getElementById('publicKey').value,
             authPassword: document.getElementById('auth-password').value,
         };
