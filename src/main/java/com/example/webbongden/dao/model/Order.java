@@ -24,6 +24,16 @@ public class Order {
     private String hashValue;
     private boolean isSigned;
     private boolean valid; // Biến để kiểm tra tính hợp lệ của chữ ký
+    private String phone;
+    private int pkId;
+
+    public String getPhone() {return this.phone;}
+
+    public void setPhone(String phone) {this.phone = phone;}
+
+    public int getPkId() {return this.pkId;}
+
+    public void setPkId(int pkId) {this.pkId = pkId;}
 
     public boolean isValid() {
         return valid;

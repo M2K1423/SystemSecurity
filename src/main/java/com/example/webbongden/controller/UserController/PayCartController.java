@@ -1,10 +1,7 @@
 package com.example.webbongden.controller.UserController;
 
 import com.example.webbongden.dao.model.*;
-import com.example.webbongden.services.OrderSevices;
-import com.example.webbongden.services.ProductServices;
-import com.example.webbongden.services.PromotionService;
-import com.example.webbongden.services.ShippingServices;
+import com.example.webbongden.services.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -19,10 +16,12 @@ public class PayCartController extends HttpServlet {
     private static final OrderSevices orderServices;
     private static final PromotionService promotionService;
     private static final ProductServices productServices;
+    private static final PublicKeyServices publicKeyServices;
     static {
         orderServices = new OrderSevices();
         promotionService = new PromotionService();
         productServices = new ProductServices();
+        publicKeyServices = new PublicKeyServices();
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,6 +36,7 @@ public class PayCartController extends HttpServlet {
         Cart cart = (Cart) session.getAttribute("cart");
         Customer customerInfo = (Customer) session.getAttribute("customerInfo");
         Account account = (Account) session.getAttribute("account");
+        int pkId = Integer.parseInt(publicKeyServices.getPublicKey(account.getId()).getId());
 
         if (cart == null || customerInfo == null || account == null) {
             // Nếu thiếu thông tin cần thiết, quay lại trang giỏ hàng và báo lỗi
@@ -82,7 +82,7 @@ public class PayCartController extends HttpServlet {
             // Lưu hóa đơn và chi tiết đơn hàng
 //            orderServices.createOrderAndInvoice(invoice, orderDetails, customerInfo);
 
-            int orderId = orderServices.createOrderAndInvoice(invoice, orderDetails, customerInfo);
+            int orderId = orderServices.createOrderAndInvoice(invoice, orderDetails, customerInfo, pkId);
             Order createdOrder = orderServices.getOrderById(orderId);
 
             request.setAttribute("latestOrder", createdOrder);
