@@ -59,6 +59,7 @@ function viewOrderDetails(orderId, rowData) {
                     <td>${item.productName}</td>
                     <td>${item.quantity}</td>
                     <td>${parseFloat(item.unitPrice).toLocaleString("vi-VN", {style: "currency", currency: "VND"})}</td>
+                    <td>${parseFloat(item.itemDiscount).toLocaleString("vi-VN", {style: "currency", currency: "VND"})}</td>
                     <td>${parseFloat(item.amount).toLocaleString("vi-VN", {style: "currency", currency: "VND"})}</td>
                 </tr>
             `);

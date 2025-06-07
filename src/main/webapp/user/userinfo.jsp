@@ -313,6 +313,7 @@
                                     <th>Tên SP</th>
                                     <th>Số Lượng</th>
                                     <th>Đơn Giá</th>
+                                    <th>Giảm giá</th>
                                     <th>Thành Tiền</th>
                                 </tr>
                                 </thead>
