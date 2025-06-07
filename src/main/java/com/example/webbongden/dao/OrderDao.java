@@ -351,9 +351,9 @@ public class OrderDao {
 
 
     //Tạo hóa đơn
-    public int createOrderFromInvoice(Invoices invoice, Customer customer) {
-        String sql = "INSERT INTO orders (invoice_id, account_id, created_at, total_price, order_status, shipping_fee, shipping_method) " +
-                "VALUES (:invoiceId, :accountId, :createdAt, :totalPrice, 'Pending', NULL, NULL)";
+    public int createOrderFromInvoice(Invoices invoice, Customer customer, int pkId) {
+        String sql = "INSERT INTO orders (invoice_id, account_id, created_at, total_price, note, order_status, shipping_fee, shipping_method, recipient_name, recipient_phone, pk_id) " +
+                "VALUES (:invoiceId, :accountId, :createdAt, :totalPrice, :note, 'Pending', 0, 'COD', :recipientName, :recipientPhone, :pkId)";
 
         return jdbi.withHandle(handle ->
                 handle.createUpdate(sql)
@@ -361,6 +361,10 @@ public class OrderDao {
                         .bind("accountId", invoice.getAccountId())
                         .bind("createdAt", invoice.getCreatedAt())
                         .bind("totalPrice", invoice.getTotalPrice())
+                        .bind("note", customer.getNote())
+                        .bind("recipientName", customer.getCusName())
+                        .bind("recipientPhone", customer.getPhone())
+                        .bind("pkId", pkId)
                         .executeAndReturnGeneratedKeys("id")
                         .mapTo(int.class)
                         .one()
@@ -439,6 +443,59 @@ public class OrderDao {
             System.out.println("isSigned: " + order.isSigned());
             System.out.println("---------------------------");
         }
+    }
+
+    public Order selectOrderById(int orderId) {
+        String sql = """
+        SELECT
+            o.id AS orderId,
+            o.created_at AS orderDate,
+            o.total_price AS totalPrice,
+            o.order_status AS orderStatus,
+            o.note AS note,
+            o.shipping_fee AS shippingFee,
+            o.shipping_method AS shippingMethod,
+            o.hash_value AS hashValue,
+            o.digital_cert AS digitalCert,
+            o.digital_signature AS digitalSignature,
+            o.is_signed, -- Không alias, giữ nguyên tên cột gốc
+            o.recipient_name AS recipientName,
+            o.recipient_phone AS recipientPhone,
+            s.address AS shippingAddress
+        FROM orders o
+        JOIN shipping s ON o.id = s.order_id
+        WHERE o.id = :orderId
+        """;
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("orderId", orderId)
+                        .map((rs, ctx) -> {
+                            Order order = new Order();
+                            order.setId(rs.getInt("orderId"));
+                            order.setCreatedAt(rs.getDate("orderDate"));
+                            order.setTotalPrice(rs.getDouble("totalPrice"));
+                            order.setNote(rs.getString("note"));
+                            order.setOrderStatus(rs.getString("orderStatus"));
+                            order.setShippingFee(rs.getDouble("shippingFee"));
+                            order.setShippingMethod(rs.getString("shippingMethod"));
+                            order.setHashValue(rs.getString("hashValue"));
+                            order.setDigitalCert(rs.getString("digitalCert"));
+                            order.setDigitalSignature(rs.getString("digitalSignature"));
+                            order.setCustomerName(rs.getString("recipientName"));
+                            order.setPhone(rs.getString("recipientPhone"));
+                            order.setAddress(rs.getString("shippingAddress"));
+
+                            // Lấy đúng cột is_signed không alias
+                            boolean isSigned = rs.getBoolean("is_signed");
+                            System.out.println("Debug getOrderById - orderId=" + order.getId() + ", isSigned=" + isSigned);
+                            order.setSigned(isSigned);
+
+                            return order;
+                        })
+                        .findOne()
+                        .orElse(null)
+        );
     }
 }
 

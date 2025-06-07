@@ -2,6 +2,7 @@ package com.example.webbongden.dao;
 
 import com.example.webbongden.dao.db.JDBIConnect;
 import com.example.webbongden.dao.model.Order;
+import com.example.webbongden.dao.model.PublicKey;
 import com.example.webbongden.dao.model.User;
 import org.jdbi.v3.core.Jdbi;
 
@@ -232,19 +233,21 @@ public class UserDao {
                     .execute() > 0; // Trả về true nếu cập nhật thành công
         });
     }
-    public String getPublicKey(int accountId) {
-        String sql = """
-                SELECT public_key 
-                FROM public_keys 
-                WHERE account_id = :accountId AND revoked = TRUE
-                ORDER BY date_updated 
-                DESC LIMIT 1
-                """;
 
+    public PublicKey getPublicKey(int accountId) {
+        String sql = """
+        SELECT id, public_key AS publicKey, date_created AS dateCreate, 
+               date_updated AS dateUpdate, revoked
+        FROM public_keys
+        WHERE account_id = :accountId AND revoked = TRUE
+        ORDER BY date_updated DESC
+        LIMIT 1
+    """;
+          
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
                         .bind("accountId", accountId)
-                        .mapTo(String.class)
+                        .mapToBean(PublicKey.class)
                         .findOne()
                         .orElse(null)
         );
@@ -252,7 +255,6 @@ public class UserDao {
 
     public boolean updatePublicKey(int accountId) {
         String sql = "UPDATE public_keys SET revoked = FALSE WHERE account_id = :accountId";
-
         return jdbi.withHandle(handle ->
                 handle.createUpdate(sql)
                         .bind("accountId", accountId)
@@ -268,13 +270,11 @@ public class UserDao {
                         .bind("accountId", accountId)
                         .bind("publicKey", publicKey)
                         .execute();
-                System.out.println("Rows affected by addPublicKey: " + rowsAffected);
+
                 return rowsAffected > 0;
             });
         } catch (Exception e) {
-            System.err.println("Error in addPublicKey: " + e.getMessage());
-            e.printStackTrace();
-            return false;
+            return false; //Trả về false khi có lỗi
         }
     }
 

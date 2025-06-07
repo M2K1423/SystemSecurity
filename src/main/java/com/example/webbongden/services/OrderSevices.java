@@ -75,7 +75,7 @@ public class OrderSevices {
         return orderDao.getOrdersByUsername(username);
     }
 
-    public int createOrderAndInvoice(Invoices invoice, List<OrderDetail> orderDetails, Customer customerInfo) {
+    public int createOrderAndInvoice(Invoices invoice, List<OrderDetail> orderDetails, Customer customerInfo, int pkId) {
         try {
             // Bước 1: Tạo hóa đơn
             int invoiceId = invoiceDao.createInvoice(invoice);
@@ -85,7 +85,7 @@ public class OrderSevices {
             invoiceDao.createInvoiceDetails(invoiceId, orderDetails);
 
             // Bước 3: Tạo đơn hàng từ hóa đơn
-            int orderId = orderDao.createOrderFromInvoice(invoice, customerInfo);
+            int orderId = orderDao.createOrderFromInvoice(invoice, customerInfo, pkId);
 
             // Bước 4: Tạo chi tiết đơn hàng
             orderDao.createOrderDetails(orderId, orderDetails);
@@ -173,6 +173,10 @@ public class OrderSevices {
     }
     public Order getOrderById(int orderId) {
         return orderDao.getOrderById(orderId);
+    }
+
+    public Order selectOrderById(int orderId) {
+        return orderDao.selectOrderById(orderId);
     }
 
 }

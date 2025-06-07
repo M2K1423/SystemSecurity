@@ -3,6 +3,8 @@ package com.example.webbongden.controller.UserController;
 import com.example.webbongden.dao.OrderDao;
 import com.example.webbongden.dao.model.Account;
 import com.example.webbongden.dao.model.Order;
+import com.example.webbongden.dao.model.PublicKey;
+import com.example.webbongden.services.PublicKeyServices;
 import com.example.webbongden.utils.CheckOrder;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -22,11 +24,14 @@ public class UserInfoController extends HttpServlet {
 
         if (session != null) {
             Account account = (Account) session.getAttribute("account");
-            String publicKey = (String) session.getAttribute("publicKey");
+            PublicKeyServices publicKeyServices = new PublicKeyServices();
+            PublicKey publicKey = publicKeyServices.getPublicKey(account.getId());
 
             if (account != null) {
                 request.setAttribute("account", account);
-                request.setAttribute("publicKey", publicKey);
+                if(publicKey !=null){
+                request.setAttribute("publicKey", publicKey.getPublicKey());}
+                else {request.setAttribute("publicKey", "");}
 
                 // ✅ Lấy danh sách đơn hàng theo account
                 List<Order> orders = orderDao.getOrdersByAccount(account.getId());
