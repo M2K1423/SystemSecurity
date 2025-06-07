@@ -23,7 +23,7 @@ public class PublicKeyController extends HttpServlet {
             // Lấy thông tin tài khoản từ session
             Account account = (Account) session.getAttribute("account");
             int id = account.getId();
-            session.setAttribute("publicKey", publicKeyServices.getPublicKey(id));
+            session.setAttribute("publicKey", publicKeyServices.getPublicKey(id).getPublicKey());
         }
 
     }
@@ -37,7 +37,6 @@ public class PublicKeyController extends HttpServlet {
         String json;
 
         try {
-            int customerId = Integer.parseInt(request.getParameter("customerId"));
             String publicKey = request.getParameter("publicKey");
             String authPassword = request.getParameter("authPassword");
 
@@ -62,6 +61,7 @@ public class PublicKeyController extends HttpServlet {
             }
 
             String password = account.getPassword();
+            int accountId = account.getId();
             AccountServices accountServices = new AccountServices();
             if (!accountServices.checkPassword(authPassword, password)) {
                 json = "{\"success\": false, \"message\": \"Mật khẩu không đúng.\"}";
@@ -71,9 +71,8 @@ public class PublicKeyController extends HttpServlet {
 
             // Gọi phương thức có thể ném ra lỗi
             try {
-                boolean isPublicKeyUpdate = publicKeyServices.addPublicKey(customerId, cleanedKey);
-                if (isPublicKeyUpdate) {
-                    publicKeyServices.updatePublicKey(customerId);
+                publicKeyServices.updatePublicKey(accountId);
+                if(publicKeyServices.addPublicKey(accountId, cleanedKey)){
                     json = "{\"success\": true, \"message\": \"Cập nhật khoá công khai thành công.\"}";
                 } else {
                     json = "{\"success\": false, \"message\": \"Cập nhật khoá thất bại.\"}";

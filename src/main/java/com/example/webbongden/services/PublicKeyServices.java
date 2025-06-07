@@ -28,7 +28,7 @@ public class PublicKeyServices {
         return userDao.updatePublicKey(id);
     }
 
-    public String getPublicKey(int customerId){
+    public com.example.webbongden.dao.model.PublicKey getPublicKey(int customerId){
         return userDao.getPublicKey(customerId);
     }
 

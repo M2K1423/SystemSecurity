@@ -3,6 +3,7 @@
 <%@ page import="jakarta.servlet.http.HttpSession" %>
 <%@ page import="com.example.webbongden.dao.model.CartItem" %>
 <%@ page import="com.example.webbongden.dao.model.Customer" %>
+<%@ page import="com.example.webbongden.dao.model.PublicKey"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%--
 
@@ -16,6 +17,7 @@
     HttpSession cartSession = request.getSession(); // Lấy session hiện tại (nếu có)
     Cart cart = (Cart) cartSession.getAttribute("cart"); // Lấy giỏ hàng từ session
     Customer cus = (Customer) cartSession.getAttribute("customerInfo");
+    PublicKey pk = (PublicKey) request.getAttribute("publicKey");
 %>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -189,9 +191,18 @@
                             <p class="total-price"><%= cart.getTotalPrice() %> VND</p>
                         </div>
                     </div>
-                    <a href="/SystemSecurity_war/cart#cus-info">
-                        <button class="buy-btn" data-tab="cus-info">ĐẶT HÀNG NGAY</button>
-                    </a>
+                    <% if (pk != null && pk.getId() != null && !pk.getId().isEmpty()) { %>
+                        <a href="/SystemSecurity_war/cart#cus-info">
+                            <button class="buy-btn" data-tab="cus-info">ĐẶT HÀNG NGAY</button>
+                        </a>
+                        <% System.out.println(pk.getId()); %>
+                    <% } else { %>
+                        <button class="buy-btn">
+                            <a href="/SystemSecurity_war/userinfo">
+                                Hãy cập nhập khoá công khai để đặt hàng.
+                            </a>
+                        </button>
+                    <% } %>
                 </div>
                 <% } %>
             </div>
