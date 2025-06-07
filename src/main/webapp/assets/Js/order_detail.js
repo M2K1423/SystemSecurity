@@ -2,7 +2,7 @@
 $(document).on("click", ".change-order-btn", function () {
     const orderId = $(this).data("id");
 
-    // Nếu cần lấy thêm dữ liệu từ dòng (ví dụ tên khách, địa chỉ)
+    // Lấy dữ ngày tạo đơn hàng
     const rowData = {
         createAt: $(this).closest("tr").find("td:nth-child(2)").text(),
     };
@@ -72,7 +72,7 @@ function viewOrderDetails(orderId, rowData) {
             }));
 
             // Hiển thị overlay
-            $(".overlay").addClass("active");
+            $("#order-popup").addClass("active");
         },
         error: function (xhr) {
             alert("Không thể lấy chi tiết đơn hàng.");
@@ -84,6 +84,78 @@ function viewOrderDetails(orderId, rowData) {
 // tắt overlay
 $(document).ready(function () {
     $("#close-invoice-details").on("click", function () {
-        $(".overlay").removeClass("active");
+        $("#order-popup").removeClass("active");
     });
 });
+
+
+// Gắn sự kiện click cho nút Cập nhât chữ kí
+document.getElementById("update-signature-btn").addEventListener("click", function () {
+    // Hiện popup cập nhật chữ kí
+    document.getElementById("popupSignatureOverlay").classList.remove("hidden");
+
+    // Ẩn Chi tiết đơn hàng
+    document.getElementById("order-popup").classList.remove("active");
+
+    // Cập nhật orderId từ popup đơn hàng
+    const orderId = document.getElementById("order_id").textContent;
+    document.getElementById("signatureOrderId").value = orderId;
+});
+
+// Gắn sự kiện submit cho form cập nhật chữ kí
+document.getElementById("signatureForm").addEventListener("submit", async (event) => {
+    event.preventDefault();          // tránh reload trang
+
+    const formData = new FormData(event.target); // lấy dữ liệu form
+
+    try {
+        // gửi yêu cầu POST tới Servlet để cập nhật chư kí
+        const resp = await fetch('/SystemSecurity_war/update-digital-signature', {
+            method: 'POST',
+            body: formData
+        });
+
+        // Nếu phản hồi lỗi thì ném ngoại lệ
+        if (!resp.ok) throw new Error("Network response was not ok");
+
+        // Parse Json từ phản hồi
+        const data = await resp.json();   // { success: true/false, message: "..." }
+
+        if (data.success) {
+            // Nếu cập nhật thành công, hiện thông báo thành công bằng SweetAlert
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: data.message,       // thông điệp từ servlet
+                confirmButtonColor: '#28a745'
+            }).then(() => {
+                // Đóng popup chữ ký và mở lại popup chi tiết đơn hàng
+                closeSignaturePopup();
+            });
+        } else {
+            // Nếu cập nhật thất bại (do logic từ backend), hiển thị lỗi
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: data.message,
+                confirmButtonColor: '#dc3545'
+            });
+        }
+    } catch (err) {
+        // Hiện thông báo trong Lỗi trong quá trình gửi
+        console.error("Lỗi khi gửi AJAX:", err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi kết nối',
+            text: 'Không thể gửi dữ liệu tới máy chủ.',
+            confirmButtonColor: '#dc3545'
+        });
+    }
+});
+
+// Hàm đóng popup chữ ký và hiển thị lại popup đơn hàng cữ
+function closeSignaturePopup() {
+    document.getElementById("popupSignatureOverlay").classList.add("hidden");
+    // Hiện lại popup 1
+    document.getElementById("order-popup").classList.add("active");
+}

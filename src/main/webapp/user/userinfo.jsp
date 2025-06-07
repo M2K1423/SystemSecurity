@@ -264,8 +264,8 @@
 
                     </div>
                 </div>
-                <!-- chi tiet don hang --!>
-                <div class="overlay">
+                <!-- Popup chi tiết đơn hàng -->
+                <div class="overlay" id="order-popup">
                     <div class="invoice-details">
                         <div class="invoice-header">
                             <p>CHI TIẾT ĐƠN HÀNG</p>
@@ -317,9 +317,7 @@
                                     <th>Thành Tiền</th>
                                 </tr>
                                 </thead>
-                                <tbody id="order-items-body">
-
-                                </tbody>
+                                <tbody id="order-items-body"></tbody>
                             </table>
                         </div>
 
@@ -332,7 +330,21 @@
                         <!-- Nút thay đổi đơn hàng, ẩn ban đầu -->
                         <div class="edit-order-wrapper">
                             <button id="edit-order-btn">Thay đổi đơn hàng</button>
+                            <button id="update-signature-btn">Cập nhật chữ kí</button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Popup thứ 2: Cập nhật chữ ký điện tử -->
+                <div class="popup-overlay hidden" id="popupSignatureOverlay">
+                    <div class="popup">
+                        <h2>Cập nhật chữ ký</h2>
+                        <form id="signatureForm">
+                            <input type="hidden" name="orderId" id="signatureOrderId" value="0">
+                            <textarea name="digitalSignature" rows="4" cols="50"></textarea>
+                            <button type="submit">Gửi</button>
+                            <button type="button" onclick="closeSignaturePopup()">Huỷ</button>
+                        </form>
                     </div>
                 </div>
 
@@ -353,21 +365,24 @@
                         <div class="dlex">
                             <label for="oldPassword">Mật khẩu cũ:</label>
                             <div>
-                                <input type="password" id="oldPassword" name="oldPassword" placeholder="Nhập mật khẩu hiện tại" required />
+                                <input type="password" id="oldPassword" name="oldPassword"
+                                       placeholder="Nhập mật khẩu hiện tại" required/>
                             </div>
                         </div>
 
                         <div class="dlex">
                             <label for="newPassword">Mật khẩu mới:</label>
                             <div>
-                                <input type="password" id="newPassword" name="newPassword" placeholder="Nhập mật khẩu mới" required />
+                                <input type="password" id="newPassword" name="newPassword"
+                                       placeholder="Nhập mật khẩu mới" required/>
                             </div>
                         </div>
 
                         <div class="dlex">
                             <label for="confirm_password">Nhập lại mật khẩu:</label>
                             <div>
-                                <input type="password" id="confirm_password" name="confirmPassword" placeholder="Nhập lại mật khẩu mới" required />
+                                <input type="password" id="confirm_password" name="confirmPassword"
+                                       placeholder="Nhập lại mật khẩu mới" required/>
                             </div>
                         </div>
                         <button class="submit" type="submit">Xác nhận</button>

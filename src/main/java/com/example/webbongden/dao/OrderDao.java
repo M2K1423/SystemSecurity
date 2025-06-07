@@ -463,6 +463,20 @@ public class OrderDao {
                         .orElse(null)
         );
     }
+
+    // Cập nhật chữ kí điện tử trong trang chi tiết đơn hàng
+    public int updateDigitalSignature(int orderId, String digitalSignature) {
+        String sql = """
+                UPDATE orders SET digital_signature = :digital_signature
+                WHERE id = :orderId
+                """;
+        return jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("digital_signature", digitalSignature)
+                        .bind("orderId", orderId)
+                        .execute()
+        );
+    }
 }
 
 
