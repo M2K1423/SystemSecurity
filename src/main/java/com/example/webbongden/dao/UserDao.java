@@ -232,54 +232,52 @@ public class UserDao {
                     .execute() > 0; // Trả về true nếu cập nhật thành công
         });
     }
-
-    public String getPublicKey(int customerId) {
+    public String getPublicKey(int accountId) {
         String sql = """
-                    SELECT public_key 
-                    FROM public_keys 
-                    WHERE customer_id = :customerId AND revoked = TRUE
-                    ORDER BY date_updated 
-                    DESC LIMIT 1
-                    """;
+                SELECT public_key 
+                FROM public_keys 
+                WHERE account_id = :accountId AND revoked = TRUE
+                ORDER BY date_updated 
+                DESC LIMIT 1
+                """;
 
-        return jdbi.withHandle(handle -> {
-            return handle.createQuery(sql)
-                .bind("customerId", customerId)
-                .mapTo(String.class)
-                .findOne()
-                .orElse(null); // Trả về null nếu không có kết quả
-
-        });
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("accountId", accountId)
+                        .mapTo(String.class)
+                        .findOne()
+                        .orElse(null)
+        );
     }
 
-    public boolean updatePublicKey(int customerId){
-        String sql = "UPDATE public_keys SET revoked = FALSE WHERE customer_id = :customer_id";
+    public boolean updatePublicKey(int accountId) {
+        String sql = "UPDATE public_keys SET revoked = FALSE WHERE account_id = :accountId";
 
-        return jdbi.withHandle(handle ->{
-            return handle.createUpdate(sql)
-                    .bind("customer_id", customerId)
-                    .execute()>0;
-        });
-
+        return jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("accountId", accountId)
+                        .execute() > 0
+        );
     }
 
-    public boolean addPublicKey(int customerId, String publicKey) {
-        String sql = "INSERT INTO public_keys (customer_id, public_key) VALUES (:customerId, :publicKey)";
+    public boolean addPublicKey(int accountId, String publicKey) {
+        String sql = "INSERT INTO public_keys (account_id, public_key) VALUES (:accountId, :publicKey)";
         try {
             return jdbi.withHandle(handle -> {
                 int rowsAffected = handle.createUpdate(sql)
-                        .bind("customerId", customerId)
+                        .bind("accountId", accountId)
                         .bind("publicKey", publicKey)
                         .execute();
-                System.out.println("Rows affected by addPublicKey: " + rowsAffected); // Log
+                System.out.println("Rows affected by addPublicKey: " + rowsAffected);
                 return rowsAffected > 0;
             });
         } catch (Exception e) {
-            System.err.println("Error in addPublicKey: " + e.getMessage()); // Log
+            System.err.println("Error in addPublicKey: " + e.getMessage());
             e.printStackTrace();
-            return false; //Trả về false khi có lỗi
+            return false;
         }
     }
+
 
 
     public static void main(String[] args) {
