@@ -174,6 +174,7 @@
                                     <th>Khách Hàng</th>
                                     <th>Ngày Đặt</th>
                                     <th>Trạng Thái</th>
+                                    <th>Xác thực</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -184,6 +185,16 @@
                                             <td>${order.customerName}</td>
                                             <td>${order.formattedCreateAt}</td>
                                             <td>${order.orderStatus}</td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${order.signed eq true}">
+                                                        Đã ký
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        Chưa ký
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </c:if>

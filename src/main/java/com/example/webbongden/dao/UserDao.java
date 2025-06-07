@@ -243,7 +243,7 @@ public class UserDao {
         ORDER BY date_updated DESC
         LIMIT 1
     """;
-
+          
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
                         .bind("accountId", accountId)
@@ -253,16 +253,13 @@ public class UserDao {
         );
     }
 
-
-    public boolean updatePublicKey(int accountId){
-        String sql = "UPDATE public_keys SET revoked = FALSE WHERE account_id = :account_id";
-
-        return jdbi.withHandle(handle ->{
-            return handle.createUpdate(sql)
-                    .bind("account_id", accountId)
-                    .execute()>0;
-        });
-
+    public boolean updatePublicKey(int accountId) {
+        String sql = "UPDATE public_keys SET revoked = FALSE WHERE account_id = :accountId";
+        return jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("accountId", accountId)
+                        .execute() > 0
+        );
     }
 
     public boolean addPublicKey(int accountId, String publicKey) {
@@ -273,12 +270,14 @@ public class UserDao {
                         .bind("accountId", accountId)
                         .bind("publicKey", publicKey)
                         .execute();
+
                 return rowsAffected > 0;
             });
         } catch (Exception e) {
             return false; //Trả về false khi có lỗi
         }
     }
+
 
 
     public static void main(String[] args) {

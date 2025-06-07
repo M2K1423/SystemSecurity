@@ -36,7 +36,9 @@ public class CheckOrder {
         customerName = customerName.trim();
         return orderId + customerName + totalStr + sdf.format(createdAt);
     }
-
+    public static byte[] generateDataByBytes(Order order) {
+        return generateRawData(order.getId(), order.getCustomerName(), order.getTotalPrice(), order.getCreatedAt()).getBytes(StandardCharsets.UTF_8);
+    }
     public static String decodeSignature(Order order) throws Exception {
         byte[] signatureBytes = Base64.getDecoder().decode(order.getDigitalSignature());
         Cipher cipher = Cipher.getInstance("RSA");
@@ -46,12 +48,20 @@ public class CheckOrder {
         return Base64.getEncoder().encodeToString(decryptedHash); // Trả về dạng String
 
     }
+    public static byte[] getSignedBytes(Order order) throws Exception {
+        String signature = order.getDigitalSignature();
+        return Base64.getDecoder().decode(signature);
+    }
     public static boolean checkOrder(Order order) throws Exception{
-        String rawData = generateRawData(order.getId(), order.getCustomerName(), order.getTotalPrice(), order.getCreatedAt());
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hashOrder = digest.digest(rawData.getBytes(StandardCharsets.UTF_8));
-        String hashOrderBase64 = Base64.getEncoder().encodeToString(hashOrder);
-        String decodedSignature = decodeSignature(order);
-        return decodedSignature.equals(hashOrderBase64);
+//        String rawData = generateRawData(order.getId(), order.getCustomerName(), order.getTotalPrice(), order.getCreatedAt());
+//        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+//        byte[] hashOrder = digest.digest(rawData.getBytes(StandardCharsets.UTF_8));
+//        String hashOrderBase64 = Base64.getEncoder().encodeToString(hashOrder);
+//        String decodedSignature = decodeSignature(order);
+//        return decodedSignature.equals(hashOrderBase64);
+        Signature verifier = Signature.getInstance("SHA256withRSA");
+        verifier.initVerify(decodePublicKey(getPublickey(order)));
+        verifier.update(generateDataByBytes(order));
+        return verifier.verify(getSignedBytes(order));
     }
 }

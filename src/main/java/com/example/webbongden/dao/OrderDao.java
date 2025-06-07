@@ -149,13 +149,14 @@ public class OrderDao {
         String sql = "SELECT o.id AS orderId, " +
                 "       c.cus_name AS customerName, " +
                 "       o.created_at AS orderDate, " +
-                "       o.order_status AS status " +
+                "       o.order_status AS status, " +
+                "       o.is_signed AS isSigned " +
                 "FROM orders o " +
                 "JOIN accounts a ON o.account_id = a.id " +
                 "JOIN customers c ON a.customer_id = c.id " +
                 "WHERE o.created_at BETWEEN " +
-                "      DATE_FORMAT(NOW(), '%Y-%m-01') " + // Ngày đầu tháng hiện tại
-                "      AND LAST_DAY(NOW())"; // Ngày cuối tháng hiện tại
+                "      DATE_FORMAT(NOW(), '%Y-%m-01') " +
+                "      AND LAST_DAY(NOW())";
 
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
@@ -163,11 +164,13 @@ public class OrderDao {
                                 rs.getInt("orderId"),
                                 rs.getString("customerName"),
                                 rs.getDate("orderDate"),
-                                rs.getString("status")
+                                rs.getString("status"),
+                                rs.getBoolean("isSigned")
                         ))
                         .list()
         );
     }
+
 
     public List<Order> getListOrders() {
         System.out.println("getListOrders() called");
@@ -396,20 +399,15 @@ public class OrderDao {
     public static void main(String[] args) {
         OrderDao orderDao = new OrderDao();
 
-        List<Order> orders = orderDao.getListOrders();
+        List<Order> orders = orderDao.getOrdersInLastMonth();
 
-        if (orders != null && !orders.isEmpty()) {
-            System.out.println("Danh sách đơn hàng:");
-            for (Order order : orders) {
-                System.out.println("Order ID: " + order.getId() +
-                        ", Customer: " + order.getCustomerName() +
-                        ", Created At: " + order.getCreatedAt() +
-                        ", Total Price: " + order.getTotalPrice() +
-                        ", Status: " + order.getOrderStatus() +
-                        ", Is Signed: " + order.isSigned());
-            }
-        } else {
-            System.out.println("Không có đơn hàng nào.");
+        for (Order order : orders) {
+            System.out.println("Order ID: " + order.getId());
+            System.out.println("Customer Name: " + order.getCustomerName());
+            System.out.println("Created At: " + order.getCreatedAt());
+            System.out.println("Order Status: " + order.getOrderStatus());
+            System.out.println("isSigned: " + order.isSigned());
+            System.out.println("---------------------------");
         }
     }
 
