@@ -28,9 +28,10 @@ public class UserInfoController extends HttpServlet {
                 request.setAttribute("account", account);
                 request.setAttribute("publicKey", publicKey);
 
-                List<Order> orders = orderDao.getListOrders();
+                // ✅ Lấy danh sách đơn hàng theo account
+                List<Order> orders = orderDao.getOrdersByAccount(account.getId());
 
-                // Với mỗi order, kiểm tra chữ ký hợp lệ
+                // ✅ Với mỗi order, kiểm tra chữ ký hợp lệ
                 for (Order order : orders) {
                     try {
                         boolean valid = CheckOrder.checkOrder(order);
@@ -53,6 +54,7 @@ public class UserInfoController extends HttpServlet {
 
         request.getRequestDispatcher("/user/userinfo.jsp").forward(request, response);
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

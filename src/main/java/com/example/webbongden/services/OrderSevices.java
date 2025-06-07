@@ -54,6 +54,9 @@ public class OrderSevices {
     public boolean updateOrderStatus(int orderId, String status) {
         return orderDao.updateOrderStatus(orderId, status);
     }
+    public boolean updateIsSigned(int orderId, boolean isSigned) {
+        return orderDao.updateIsSigned(orderId, isSigned);
+    }
 
     public List<Order> filterOrderByStatus(String value) {
         return orderDao.filterOrderByStatus(value);
@@ -155,7 +158,9 @@ public class OrderSevices {
         signature.update(data);
         return signature.sign();
     }
-
+    public List<Order> getOrdersByAccount(int accountId) {
+        return orderDao.getOrdersByAccount(accountId);
+    }
 
     private String generateRawData(int orderId, String customerName, double total, Date createdAt) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

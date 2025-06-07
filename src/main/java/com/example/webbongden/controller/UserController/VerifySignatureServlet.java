@@ -126,8 +126,8 @@ public class VerifySignatureServlet extends HttpServlet {
 
             if (isValid) {
                 order = orderSevices.getOrderById(order.getId());
-
-                orderSevices.updateOrderStatus(order.getId(), true);
+                orderSevices.updateIsSigned(order.getId(), true);
+//                orderSevices.updateOrderStatus(order.getId(), true);
 
             }
 

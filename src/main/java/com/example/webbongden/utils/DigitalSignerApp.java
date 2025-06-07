@@ -195,46 +195,23 @@ public class DigitalSignerApp extends JFrame {
 
 
 
-            Enumeration<String> aliases = ks.aliases();
-            while (aliases.hasMoreElements()) {
-                String alias = aliases.nextElement();
-                Certificate cert = ks.getCertificate(alias);
-                if (cert instanceof X509Certificate) {
-                    X509Certificate x509 = (X509Certificate) cert;
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    certInfoLabel.setText(String.format("🔹 CN: %s | Từ: %s đến %s",
-                            x509.getSubjectDN().getName(),
-                            sdf.format(x509.getNotBefore()),
-                            sdf.format(x509.getNotAfter())));
-                    break;  }
+                Enumeration<String> aliases = ks.aliases();
+                while (aliases.hasMoreElements()) {
+                    String alias = aliases.nextElement();
+                    Certificate cert = ks.getCertificate(alias);
+                    if (cert instanceof X509Certificate) {
+                        X509Certificate x509 = (X509Certificate) cert;
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                        certInfoLabel.setText(String.format("🔹 CN: %s | Từ: %s đến %s",
+                                x509.getSubjectDN().getName(),
+                                sdf.format(x509.getNotBefore()),
+                                sdf.format(x509.getNotAfter())));
+                        break;  }
                 }
             }
         } catch (Exception ex) {
             certInfoLabel.setText("🔸 Không đọc được thông tin chứng thư");
         }
-    }
-
-    private PrivateKey loadPrivateKey(File keystoreFile, String password) throws Exception {
-        KeyStore ks = KeyStore.getInstance("PKCS12");
-        try (InputStream is = new FileInputStream(keystoreFile)) {
-            ks.load(is, password.toCharArray());
-        }
-
-        Enumeration<String> aliases = ks.aliases();
-        while (aliases.hasMoreElements()) {
-            String alias = aliases.nextElement();
-            if (ks.isKeyEntry(alias)) {
-                return (PrivateKey) ks.getKey(alias, password.toCharArray());
-            }
-        }
-        throw new Exception("Không tìm thấy private key trong keystore");
-    }
-
-    private byte[] signData(PrivateKey privateKey, byte[] data) throws Exception {
-        Signature signature = Signature.getInstance("SHA256withRSA");
-        signature.initSign(privateKey);
-        signature.update(data);
-        return signature.sign();
     }
 
     private void signFile() {
@@ -244,17 +221,30 @@ public class DigitalSignerApp extends JFrame {
                 return;
             }
 
+            if (!inputFile.getName().endsWith(".txt")) {
+                JOptionPane.showMessageDialog(this, "Chỉ hỗ trợ ký file .txt!");
+                return;
+            }
+
             String password = JOptionPane.showInputDialog(this, "Nhập mật khẩu keystore:");
             if (password == null || password.isEmpty()) return;
 
             String rawData = Files.readString(inputFile.toPath(), StandardCharsets.UTF_8).trim();
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] dataHash = md.digest(rawData.getBytes(StandardCharsets.UTF_8));
+            byte[] data = rawData.getBytes(StandardCharsets.UTF_8);
 
-            PrivateKey privateKey = loadPrivateKey(keystoreFile, password);
-            byte[] signedData = signData(privateKey, dataHash);
+            KeyStore ks = KeyStore.getInstance("PKCS12");
+            try (InputStream is = new FileInputStream(keystoreFile)) {
+                ks.load(is, password.toCharArray());
+            }
 
-            String signatureBase64 = Base64.getEncoder().encodeToString(signedData);
+            String alias = ks.aliases().nextElement();
+            PrivateKey privateKey = (PrivateKey) ks.getKey(alias, password.toCharArray());
+
+            Signature signature = Signature.getInstance("SHA256withRSA");
+            signature.initSign(privateKey);
+            signature.update(data);
+            byte[] signed = signature.sign();
+            String signatureBase64 = Base64.getEncoder().encodeToString(signed);
 
             File sigFile = new File(inputFile.getParent(), inputFile.getName() + ".sig");
             try (FileWriter fw = new FileWriter(sigFile)) {
@@ -269,7 +259,6 @@ public class DigitalSignerApp extends JFrame {
             outputArea.setText("❌ Lỗi khi ký file: " + ex.getMessage());
         }
     }
-
 
     private void clearAll() {
         inputFile = null;

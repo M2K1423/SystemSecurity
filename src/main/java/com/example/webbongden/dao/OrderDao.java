@@ -19,6 +19,29 @@ public class OrderDao {
         jdbi = JDBIConnect.get();
     }
 
+
+
+    public List<Order> getOrdersByAccount(int accountId) {
+        String sql = "SELECT id, created_at, total_price, order_status, is_signed FROM orders WHERE account_id = :accountId ORDER BY created_at DESC";
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("accountId", accountId)
+                        .map((rs, ctx) -> {
+                            Order order = new Order();
+                            order.setId(rs.getInt("id"));
+                            order.setCreatedAt(rs.getDate("created_at"));
+                            order.setTotalPrice(rs.getDouble("total_price"));
+                            order.setOrderStatus(rs.getString("order_status"));
+                            order.setSigned(rs.getBoolean("is_signed")); // ⚠️ ánh xạ đúng
+                            return order;
+                        })
+                        .list()
+        );
+    }
+
+
+
     public void updateOrderStatus(int orderId, boolean isSigned) {
         jdbi.useHandle(handle -> {
             String sql = "UPDATE orders SET is_signed = :isSigned WHERE id = :orderId";
@@ -29,6 +52,17 @@ public class OrderDao {
             System.out.println("Rows affected: " + rowsAffected);
         });
     }
+
+    public boolean updateIsSigned(int orderId, boolean isSigned) {
+        String sql = "UPDATE orders SET is_signed = :isSigned WHERE id = :orderId";
+        return jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("isSigned", isSigned)
+                        .bind("orderId", orderId)
+                        .execute() > 0
+        );
+    }
+
 
     public void updateDigitalSignature(int orderId, String signatureBase64, String certBase64, String hashBase64) {
         String sql = "UPDATE orders SET digital_signature = :signature, digital_cert = :cert, hash_value = :hash WHERE id = :id";
