@@ -428,7 +428,7 @@ public class OrderDao {
             o.digital_signature AS digitalSignature,
             o.is_signed, -- Không alias, giữ nguyên tên cột gốc
             o.recipient_name AS recipientName,
-            recipient_name AS recipientPhone,
+            o.recipient_phone AS recipientPhone,
             s.address AS shippingAddress
         FROM orders o
         JOIN shipping s ON o.id = s.order_id
