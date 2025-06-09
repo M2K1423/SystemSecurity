@@ -1,25 +1,30 @@
 package com.example.webbongden.utils;
 
+import com.example.webbongden.dao.OrderDao;
 import com.example.webbongden.dao.model.Order;
+import com.example.webbongden.dao.model.OrderDetail;
 import com.example.webbongden.services.PublicKeyServices;
 
-import javax.crypto.Cipher;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
-import java.security.MessageDigest;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
-import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 public class CheckOrder {
 
     public static String getPublickey(Order order) {
         PublicKeyServices publicKeyServices = new PublicKeyServices();
-        return publicKeyServices.getPublicKey(order.getAccountId()).getPublicKey();
+        int accountId = order.getAccountId();
+        com.example.webbongden.dao.model.PublicKey pubKey = publicKeyServices.getPublicKey(accountId);
+        if (pubKey == null || pubKey.getPublicKey() == null) {
+            throw new RuntimeException("Không tìm thấy public key cho tài khoản ID: " + accountId);
+        }
+        return pubKey.getPublicKey();
     }
 
     public static PublicKey decodePublicKey(String base64PublicKey) throws Exception {
@@ -29,39 +34,52 @@ public class CheckOrder {
         return keyFactory.generatePublic(spec);
     }
 
-    private static String generateRawData(int orderId, String customerName, double total, Date createdAt) {
+    private static String generateRawData(Order order) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String totalStr = String.format("%.2f", total);
-        customerName = customerName.trim();
-        return orderId + customerName + totalStr + sdf.format(createdAt);
+
+        // Initialize OrderDao to fetch order details
+        OrderDao orderDao = new OrderDao();
+        List<OrderDetail> orderDetails = orderDao.getOrderDetailsByOrderId(order.getId());
+
+        // Build product list string
+        StringBuilder productList = new StringBuilder();
+        for (OrderDetail detail : orderDetails) {
+            productList.append(detail.getProductId()).append("\r\n")
+                    .append(detail.getProductName()).append("\r\n")
+                    .append(detail.getQuantity()).append("\r\n")
+                    .append(detail.getUnitPrice()).append("\r\n")
+                    .append(detail.getAmount()).append("\r\n");
+        }
+
+        // Construct raw data string
+        return order.getCustomerName().trim() + "\r\n" +
+                order.getPhone() + "\r\n" +
+                order.getId() + "\r\n" +
+                sdf.format(order.getCreatedAt()) + "\r\n" +
+                order.getAddress() + "\r\n" +
+                order.getShippingMethod() + "\r\n" +
+                String.format("%.2f", order.getShippingFee()) + "\r\n" +
+                productList.toString();
     }
+
     public static byte[] generateDataByBytes(Order order) {
-        return generateRawData(order.getId(), order.getCustomerName(), order.getTotalPrice(), order.getCreatedAt()).getBytes(StandardCharsets.UTF_8);
+        return generateRawData(order).getBytes(StandardCharsets.UTF_8);
     }
-    public static String decodeSignature(Order order) throws Exception {
-        byte[] signatureBytes = Base64.getDecoder().decode(order.getDigitalSignature());
-        Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.DECRYPT_MODE, decodePublicKey(getPublickey(order)));
-        byte[] decryptedHash = cipher.doFinal(signatureBytes); // đây chính là SHA-256 hash (32 bytes)
 
-        return Base64.getEncoder().encodeToString(decryptedHash); // Trả về dạng String
-
-    }
     public static byte[] getSignedBytes(Order order) throws Exception {
         String signature = order.getDigitalSignature();
         return Base64.getDecoder().decode(signature);
     }
-    public static boolean checkOrder(Order order) throws Exception{
-//        String rawData = generateRawData(order.getId(), order.getCustomerName(), order.getTotalPrice(), order.getCreatedAt());
-//        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-//        byte[] hashOrder = digest.digest(rawData.getBytes(StandardCharsets.UTF_8));
-//        String hashOrderBase64 = Base64.getEncoder().encodeToString(hashOrder);
-//        String decodedSignature = decodeSignature(order);
-//        return decodedSignature.equals(hashOrderBase64);
+
+    public static boolean checkOrder(Order order) throws Exception {
+        // Initialize the Signature object for verification
         Signature verifier = Signature.getInstance("SHA256withRSA");
+        // Initialize with the public key
         verifier.initVerify(decodePublicKey(getPublickey(order)));
+        // Update with the data to verify (same data used during signing)
         verifier.update(generateDataByBytes(order));
+        // Verify the signature
         return verifier.verify(getSignedBytes(order));
     }
 }
