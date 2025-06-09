@@ -199,7 +199,7 @@
                                 <th>Tải hóa đơn</th>
                                 <th>Chi tiết đơn hàng</th>
                                 <th>Xác thực</th>
-                                <th>Kiểm tra lại đơn hàng</th> <!-- Cột mới -->
+<%--                                <th>Kiểm tra lại đơn hàng</th> <!-- Cột mới -->--%>
                             </tr>
                             </thead>
                             <tbody>
@@ -241,13 +241,14 @@
                                     <span class="badge badge-danger">❌ Chưa ký</span>
                                     <% } %>
                                 </td>
-                                <td>
-                                    <% if (order.isValid()) { %>
-                                    <span class="badge badge-success">✅ Đã kiểm tra</span>
-                                    <% } else { %>
-                                    <span class="badge badge-danger">❌ Chưa kiểm tra</span>
-                                    <% } %>
-                                </td>
+<%--                                <td>--%>
+<%--                                    <% System.out.println("Order ID: " + order.getId() + "Account Id: " + order.getAccountId() + "Key Id: " + order.getPkId()); %>--%>
+<%--                                    <% if (order.isValid()) { %>--%>
+<%--                                    <span class="badge badge-success">✅ Đã kiểm tra</span>--%>
+<%--                                    <% } else { %>--%>
+<%--                                    <span class="badge badge-danger">❌ Chưa kiểm tra</span>--%>
+<%--                                    <% } %>--%>
+<%--                                </td>--%>
                             </tr>
                             <%
                                 }

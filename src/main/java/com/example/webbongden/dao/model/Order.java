@@ -26,6 +26,15 @@ public class Order {
     private boolean valid; // Biến để kiểm tra tính hợp lệ của chữ ký
     private String phone;
     private int pkId;
+    private String publicKey;
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
 
     public String getPhone() {return this.phone;}
 

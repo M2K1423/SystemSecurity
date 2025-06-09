@@ -427,9 +427,12 @@ public class OrderDao {
             o.is_signed, -- Không alias, giữ nguyên tên cột gốc
             o.recipient_name AS recipientName,
             o.recipient_phone AS recipientPhone,
-            s.address AS shippingAddress
+            o.pk_id AS pkId,
+            s.address AS shippingAddress,
+            pk.public_key AS publicKey
         FROM orders o
         JOIN shipping s ON o.id = s.order_id
+        JOIN public_keys pk ON o.pk_id = pk.id
         WHERE o.id = :orderId
         """;
 
@@ -451,7 +454,8 @@ public class OrderDao {
                             order.setCustomerName(rs.getString("recipientName"));
                             order.setPhone(rs.getString("recipientPhone"));
                             order.setAddress(rs.getString("shippingAddress"));
-
+                            order.setPkId(rs.getInt("pkId"));
+                            order.setPublicKey(rs.getString("publicKey"));
                             // Lấy đúng cột is_signed không alias
                             boolean isSigned = rs.getBoolean("is_signed");
                             System.out.println("Debug getOrderById - orderId=" + order.getId() + ", isSigned=" + isSigned);

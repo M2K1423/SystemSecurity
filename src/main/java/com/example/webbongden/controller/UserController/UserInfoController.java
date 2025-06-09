@@ -36,15 +36,15 @@ public class UserInfoController extends HttpServlet {
                 List<Order> orders = orderDao.getListOrders();
 
                 // Với mỗi order, kiểm tra chữ ký hợp lệ
-                for (Order order : orders) {
-                    try {
-                        boolean valid = CheckOrder.checkOrder(order);
-                        order.setValid(valid);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        order.setValid(false);
-                    }
-                }
+//                for (Order order : orders) {
+//                    try {
+//                        boolean valid = CheckOrder.checkOrder(order);
+//                        order.setValid(valid);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        order.setValid(false);
+//                    }
+//                }
 
                 request.setAttribute("orders", orders);
             } else {
