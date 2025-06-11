@@ -68,11 +68,15 @@ public class OrderDao {
             o.digital_signature AS digitalSignature,
             o.is_signed, -- Không alias, giữ nguyên tên cột gốc
             c.cus_name AS customerName,
-            s.address AS shippingAddress
+            s.address AS shippingAddress,
+            pk.public_key AS publicKey,
+            o.account_id AS accountId,
+            pk.id AS pkId
         FROM orders o
         JOIN accounts a ON o.account_id = a.id
         JOIN customers c ON a.customer_id = c.id
         JOIN shipping s ON o.id = s.order_id
+        JOIN public_keys pk ON o.pk_id = pk.id
         WHERE o.id = :orderId
         """;
 
@@ -90,7 +94,9 @@ public class OrderDao {
                             order.setDigitalSignature(rs.getString("digitalSignature"));
                             order.setCustomerName(rs.getString("customerName"));
                             order.setAddress(rs.getString("shippingAddress"));
-
+                            order.setPkId(rs.getInt("pkId"));
+                            order.setPublicKey(rs.getString("publicKey"));
+                            order.setAccountId(rs.getInt("accountId"));
                             // Lấy đúng cột is_signed không alias
                             boolean isSigned = rs.getBoolean("is_signed");
                             System.out.println("Debug getOrderById - orderId=" + order.getId() + ", isSigned=" + isSigned);
@@ -429,7 +435,8 @@ public class OrderDao {
             o.recipient_phone AS recipientPhone,
             o.pk_id AS pkId,
             s.address AS shippingAddress,
-            pk.public_key AS publicKey
+            pk.public_key AS publicKey,
+            o.account_id AS accountId
         FROM orders o
         JOIN shipping s ON o.id = s.order_id
         JOIN public_keys pk ON o.pk_id = pk.id
@@ -456,6 +463,7 @@ public class OrderDao {
                             order.setAddress(rs.getString("shippingAddress"));
                             order.setPkId(rs.getInt("pkId"));
                             order.setPublicKey(rs.getString("publicKey"));
+                            order.setAccountId(rs.getInt("accountId"));
                             // Lấy đúng cột is_signed không alias
                             boolean isSigned = rs.getBoolean("is_signed");
                             System.out.println("Debug getOrderById - orderId=" + order.getId() + ", isSigned=" + isSigned);

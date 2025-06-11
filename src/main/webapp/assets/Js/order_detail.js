@@ -1,8 +1,7 @@
-
 $(document).on("click", ".change-order-btn", function () {
     const orderId = $(this).data("id");
 
-    // Lấy dữ ngày tạo đơn hàng
+    // Lấy dữ liệu ngày tạo đơn hàng
     const rowData = {
         createAt: $(this).closest("tr").find("td:nth-child(2)").text(),
     };
@@ -14,20 +13,21 @@ $(document).on("click", ".change-order-btn", function () {
 function viewOrderDetails(orderId, rowData) {
     // Lấy thông tin ngày tạo đơn hàng
     $("#create_at").text(rowData.createAt || "N/A");
+    $("#verification-status").text("Đang kiểm tra...");
+
     // Gửi AJAX để lấy chi tiết đơn hàng
     $.ajax({
         url: "/SystemSecurity_war/order-info",
         type: "GET",
         data: {orderId: orderId},
         success: function (data) {
-            // Nếu server trả về JSON kiểu map thì jQuery sẽ parse được luôn
             const orderDetails = data.orderDetails;
             const order = data.order;
 
-            $("#order_id").text(order.id || "N/A")
-            $("#form_of_delivery").text(order.shippingMethod || "N/A")
+            $("#order_id").text(order.id || "N/A");
+            $("#form_of_delivery").text(order.shippingMethod || "N/A");
             $("#delivery_fee").text(order.shippingFee ?? "N/A");
-            $("#note").text(order.note ?? "N/A")
+            $("#note").text(order.note ?? "N/A");
 
             // Gán thông tin khách hàng
             $("#customer-name").text(order.customerName || "N/A");
@@ -39,7 +39,7 @@ function viewOrderDetails(orderId, rowData) {
                 const editUrl = `/SystemSecurity_war/edit-order?orderId=${order.id}&email=${email}`;
 
                 $("#edit-order-btn")
-                    .off("click") // tránh gán nhiều lần
+                    .off("click")
                     .on("click", function () {
                         window.location.href = editUrl;
                     })
@@ -48,7 +48,7 @@ function viewOrderDetails(orderId, rowData) {
                 $("#edit-order-btn").hide();
             }
 
-            // Gán chi tiết đơn hàng (giữ nguyên phần render bảng của bạn)
+            // Gán chi tiết đơn hàng
             const $orderItemsBody = $("#order-items-body");
             $orderItemsBody.empty();
 
@@ -62,7 +62,7 @@ function viewOrderDetails(orderId, rowData) {
                     <td>${parseFloat(item.itemDiscount).toLocaleString("vi-VN", {style: "currency", currency: "VND"})}</td>
                     <td>${parseFloat(item.amount).toLocaleString("vi-VN", {style: "currency", currency: "VND"})}</td>
                 </tr>
-            `);
+                `);
             });
 
             const totalAmount = orderDetails.reduce((total, item) => total + parseFloat(item.amount), 0);
@@ -70,6 +70,24 @@ function viewOrderDetails(orderId, rowData) {
                 style: "currency",
                 currency: "VND",
             }));
+
+            // Gửi AJAX để kiểm tra chữ ký
+            $.ajax({
+                url: "/SystemSecurity_war/verify-order-signature",
+                type: "POST",
+                data: {orderId: orderId},
+                success: function (response) {
+                    if (response.success) {
+                        $("#verification-status").text(response.message).css("color", "green");
+                    } else {
+                        $("#verification-status").text(response.message).css("color", "red");
+                    }
+                },
+                error: function (xhr) {
+                    $("#verification-status").text("Lỗi khi kiểm tra chữ ký.").css("color", "red");
+                    console.error("Lỗi:", xhr.responseText);
+                }
+            });
 
             // Hiển thị overlay
             $("#order-popup").addClass("active");
@@ -81,59 +99,45 @@ function viewOrderDetails(orderId, rowData) {
     });
 }
 
-// tắt overlay
+// Tắt overlay
 $(document).ready(function () {
     $("#close-invoice-details").on("click", function () {
         $("#order-popup").removeClass("active");
     });
 });
 
-
-// Gắn sự kiện click cho nút Cập nhât chữ kí
+// Gắn sự kiện click cho nút Cập nhật chữ ký
 document.getElementById("update-signature-btn").addEventListener("click", function () {
-    // Hiện popup cập nhật chữ kí
     document.getElementById("popupSignatureOverlay").classList.remove("hidden");
-
-    // Ẩn Chi tiết đơn hàng
     document.getElementById("order-popup").classList.remove("active");
-
-    // Cập nhật orderId từ popup đơn hàng
     const orderId = document.getElementById("order_id").textContent;
     document.getElementById("signatureOrderId").value = orderId;
 });
 
-// Gắn sự kiện submit cho form cập nhật chữ kí
+// Gắn sự kiện submit cho form cập nhật chữ ký
 document.getElementById("signatureForm").addEventListener("submit", async (event) => {
-    event.preventDefault();          // tránh reload trang
-
-    const formData = new FormData(event.target); // lấy dữ liệu form
+    event.preventDefault();
+    const formData = new FormData(event.target);
 
     try {
-        // gửi yêu cầu POST tới Servlet để cập nhật chư kí
         const resp = await fetch('/SystemSecurity_war/update-digital-signature', {
             method: 'POST',
             body: formData
         });
 
-        // Nếu phản hồi lỗi thì ném ngoại lệ
         if (!resp.ok) throw new Error("Network response was not ok");
-
-        // Parse Json từ phản hồi
-        const data = await resp.json();   // { success: true/false, message: "..." }
+        const data = await resp.json();
 
         if (data.success) {
-            // Nếu cập nhật thành công, hiện thông báo thành công bằng SweetAlert
             Swal.fire({
                 icon: 'success',
                 title: 'Thành công',
-                text: data.message,       // thông điệp từ servlet
+                text: data.message,
                 confirmButtonColor: '#28a745'
             }).then(() => {
-                // Đóng popup chữ ký và mở lại popup chi tiết đơn hàng
                 closeSignaturePopup();
             });
         } else {
-            // Nếu cập nhật thất bại (do logic từ backend), hiển thị lỗi
             Swal.fire({
                 icon: 'error',
                 title: 'Lỗi',
@@ -142,7 +146,6 @@ document.getElementById("signatureForm").addEventListener("submit", async (event
             });
         }
     } catch (err) {
-        // Hiện thông báo trong Lỗi trong quá trình gửi
         console.error("Lỗi khi gửi AJAX:", err);
         Swal.fire({
             icon: 'error',
@@ -153,9 +156,8 @@ document.getElementById("signatureForm").addEventListener("submit", async (event
     }
 });
 
-// Hàm đóng popup chữ ký và hiển thị lại popup đơn hàng cữ
+// Hàm đóng popup chữ ký và hiển thị lại popup đơn hàng
 function closeSignaturePopup() {
     document.getElementById("popupSignatureOverlay").classList.add("hidden");
-    // Hiện lại popup 1
     document.getElementById("order-popup").classList.add("active");
 }

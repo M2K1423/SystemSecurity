@@ -3,13 +3,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.webbongden.utils.DigitalSignatureUtil" %>
 <%@ page import="com.example.webbongden.utils.CheckOrder" %>
-<%@ page import="com.example.webbongden.utils.CheckOrder" %><%--
-  Created by IntelliJ IDEA.
-  User: Admin
-  Date: 12/15/2024
-  Time: 10:22 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html lang="en">
 <head>
@@ -137,15 +130,9 @@
                             </div>
                         </div>
 
-
                         <div class="info-btn">
-
-                                <button type="submit" id="save-info" style="display: none;">Lưu</button>
-
-
-
-                                <button type="button" id="edit-info">Sửa thông tin</button>
-
+                            <button type="submit" id="save-info" style="display: none;">Lưu</button>
+                            <button type="button" id="edit-info">Sửa thông tin</button>
                         </div>
                     </form>
                     <p id="saveMessage" style="display: none; color: green">
@@ -199,20 +186,11 @@
                                 <th>Tải hóa đơn</th>
                                 <th>Chi tiết đơn hàng</th>
                                 <th>Xác thực</th>
-<%--                                <th>Kiểm tra lại đơn hàng</th> <!-- Cột mới -->--%>
                             </tr>
                             </thead>
                             <tbody>
                             <%
                                 for (Order order : orders) {
-//                                    // Gọi phương thức kiểm tra ký số từ backend
-//                                    String orderId = String.valueOf(order.getId());
-//                                    boolean isVerified = false; // tạm thời để random do chưa có backend xử lý kiểm tra
-//                                    try {
-//                                        isVerified = CheckOrder.checkOrder(order);
-//                                    } catch (Exception e) {
-//                                        throw new RuntimeException(e);
-//                                    }
                             %>
                             <tr>
                                 <td><%= order.getId() %></td>
@@ -225,30 +203,16 @@
                                         Tải
                                     </a>
                                 </td>
-
-                                <!-- Thay đổi thông tin đơn hàng-->
                                 <td>
                                     <button class="change-order-btn" data-id="<%= order.getId() %>">Xem chi tiết</button>
                                 </td>
-
                                 <td>
-                                    <%
-                                        System.out.println("Order ID: " + order.getId() + ", isSigned: " + order.isSigned());
-                                    %>
                                     <% if (order.isSigned()) { %>
                                     <span class="badge badge-success">✅ Đã ký</span>
                                     <% } else { %>
                                     <span class="badge badge-danger">❌ Chưa ký</span>
                                     <% } %>
                                 </td>
-<%--                                <td>--%>
-<%--                                    <% System.out.println("Order ID: " + order.getId() + "Account Id: " + order.getAccountId() + "Key Id: " + order.getPkId()); %>--%>
-<%--                                    <% if (order.isValid()) { %>--%>
-<%--                                    <span class="badge badge-success">✅ Đã kiểm tra</span>--%>
-<%--                                    <% } else { %>--%>
-<%--                                    <span class="badge badge-danger">❌ Chưa kiểm tra</span>--%>
-<%--                                    <% } %>--%>
-<%--                                </td>--%>
                             </tr>
                             <%
                                 }
@@ -262,7 +226,6 @@
                         <%
                             }
                         %>
-
                     </div>
                 </div>
                 <!-- Popup chi tiết đơn hàng -->
@@ -279,7 +242,7 @@
                         </p>
                         <p style="padding-bottom:10px">
                             Ngày tạo: <span id="create_at">N/A</span>
-                        <p>
+                        </p>
                         <p style="padding-bottom:10px">
                             Hình thức giao hàng: <span id="form_of_delivery">N/A</span>
                         </p>
@@ -304,7 +267,6 @@
                                 <span id="customer-phone">N/A</span>
                             </p>
                         </div>
-
                         <div class="order-items">
                             <h4>SẢN PHẨM MUA</h4>
                             <table class="items-table">
@@ -321,21 +283,25 @@
                                 <tbody id="order-items-body"></tbody>
                             </table>
                         </div>
-
                         <div class="total-price">
                             <p>
                                 <strong>TỔNG TIỀN:</strong>
                                 <span id="total-amount">0 VND</span>
                             </p>
                         </div>
-                        <!-- Nút thay đổi đơn hàng, ẩn ban đầu -->
+                        <!-- Verification Result -->
+                        <div class="verification-result" style="padding-top: 10px;">
+                            <p>
+                                <strong>Trạng thái xác thực:</strong>
+                                <span id="verification-status">Đang kiểm tra...</span>
+                            </p>
+                        </div>
                         <div class="edit-order-wrapper">
                             <button id="edit-order-btn">Thay đổi đơn hàng</button>
                             <button id="update-signature-btn">Cập nhật chữ kí</button>
                         </div>
                     </div>
                 </div>
-
                 <!-- Popup thứ 2: Cập nhật chữ ký điện tử -->
                 <div class="popup-overlay hidden" id="popupSignatureOverlay">
                     <div class="popup">
@@ -348,8 +314,7 @@
                         </form>
                     </div>
                 </div>
-
-                <!-- đổi mật khẩu -->
+                <!-- Đổi mật khẩu -->
                 <div
                         id="change_password"
                         class="content_section"
@@ -358,8 +323,7 @@
                     <div class="change_password_header">
                         <h1>ĐỔI MẬT KHẨU</h1>
                         <div class="title">
-                            Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho
-                            người khác
+                            Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người khác
                         </div>
                     </div>
                     <form class="change_password_form" action="changePassword" method="POST">
@@ -370,7 +334,6 @@
                                        placeholder="Nhập mật khẩu hiện tại" required/>
                             </div>
                         </div>
-
                         <div class="dlex">
                             <label for="newPassword">Mật khẩu mới:</label>
                             <div>
@@ -378,7 +341,6 @@
                                        placeholder="Nhập mật khẩu mới" required/>
                             </div>
                         </div>
-
                         <div class="dlex">
                             <label for="confirm_password">Nhập lại mật khẩu:</label>
                             <div>
@@ -407,38 +369,25 @@
 <script src="${pageContext.request.contextPath}/assets/Js/order_detail.js?v=2.0" defer></script>
 <script>
     document.getElementById('edit-info').addEventListener('click', function () {
-        // Lấy tất cả các input cần chỉnh sửa
         const inputs = document.querySelectorAll('.info-form input:not([id="email"]):not([id="create-date"])');
-
-        // Bật chế độ chỉnh sửa
         inputs.forEach(input => {
-            input.readOnly = false; // Tắt chế độ readonly
-            input.classList.add('editable'); // Thêm lớp để có thể thay đổi kiểu dáng (nếu cần)
+            input.readOnly = false;
+            input.classList.add('editable');
         });
-
-        // Hiển thị nút lưu và ẩn nút sửa
         document.getElementById('edit-info').style.display = 'none';
         document.getElementById('save-info').style.display = 'inline-block';
     });
 
-    // Khi lưu thông tin
     document.getElementById('save-info').addEventListener('click', function (e) {
         e.preventDefault();
-
-        // Lấy ID khách hàng từ thuộc tính data
         const customerId = document.getElementById('userInfo').getAttribute('data-customer-id');
-
-        // Thu thập dữ liệu từ các input
         const formData = {
             customerId: customerId,
             cusName: document.getElementById('username').value,
             address: document.getElementById('address').value,
             phone: document.getElementById('phone').value,
         };
-
-        console.log(formData); // Kiểm tra dữ liệu trước khi gửi
-
-        // Gửi AJAX để cập nhật thông tin
+        console.log(formData);
         $.ajax({
             url: '/SystemSecurity_war/edit-cus-info',
             type: 'POST',
@@ -447,15 +396,11 @@
             success: function (response) {
                 if (response.success) {
                     Swal.fire('Thành công!', 'Thông tin của bạn đã được cập nhật.', 'success');
-
-                    // Đặt lại trạng thái readonly sau khi lưu
                     const inputs = document.querySelectorAll('.info-form input:not([id="email"]):not([id="create-date"])');
                     inputs.forEach(input => {
-                        input.readOnly = true; // Bật lại chế độ readonly
-                        input.classList.remove('editable'); // Xóa lớp editable
+                        input.readOnly = true;
+                        input.classList.remove('editable');
                     });
-
-                    // Ẩn nút lưu và hiển thị nút sửa
                     document.getElementById('save-info').style.display = 'none';
                     document.getElementById('edit-info').style.display = 'inline-block';
                 } else {
@@ -468,28 +413,22 @@
         });
     });
 
-    // chỉnh sửa khoá
     document.getElementById('edit-publicKey').addEventListener('click', function () {
         const inputs = document.querySelectorAll('.key-form input, .key-form textarea');
-
         inputs.forEach(input => {
             input.readOnly = false;
             input.classList.add('editable');
         });
-
         document.getElementById('edit-publicKey').style.display = 'none';
         document.getElementById('save-publicKey').style.display = 'inline-block';
     });
 
-    // lưu khoá công khai
     document.getElementById('save-publicKey').addEventListener('click', function (e) {
         e.preventDefault();
-
         const formData = {
             publicKey: document.getElementById('publicKey').value,
             authPassword: document.getElementById('auth-password').value,
         };
-
         $.ajax({
             url: '/SystemSecurity_war/edit-publicKey',
             type: 'POST',
@@ -498,14 +437,11 @@
             success: function (response) {
                 if (response.success) {
                     Swal.fire('Thành công!', response.message, 'success');
-
                     const inputs = document.querySelectorAll('.key-form input, .key-form textarea');
                     inputs.forEach(input => {
-                        input.readOnly = true; // Bật lại chế độ readonly
-                        input.classList.remove('editable'); // Xóa lớp editable
+                        input.readOnly = true;
+                        input.classList.remove('editable');
                     });
-
-                    // Ẩn nút lưu và hiển thị nút sửa
                     document.getElementById('save-publicKey').style.display = 'none';
                     document.getElementById('edit-publicKey').style.display = 'inline-block';
                 } else {
