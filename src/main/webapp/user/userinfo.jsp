@@ -299,6 +299,7 @@
                         <div class="edit-order-wrapper">
                             <button id="edit-order-btn">Thay đổi đơn hàng</button>
                             <button id="update-signature-btn">Cập nhật chữ kí</button>
+                            <button id="download-order-btn">Tải đơn hàng</button>
                         </div>
                     </div>
                 </div>

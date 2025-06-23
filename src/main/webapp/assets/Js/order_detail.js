@@ -161,3 +161,9 @@ function closeSignaturePopup() {
     document.getElementById("popupSignatureOverlay").classList.add("hidden");
     document.getElementById("order-popup").classList.add("active");
 }
+
+// Gắn sự kiện click cho nút Tải đơn hàng
+$(document).on("click", "#download-order-btn", function () {
+    const orderId = $("#order_id").text();
+    window.location.href = `/SystemSecurity_war/download-order?orderId=${orderId}`;
+});
