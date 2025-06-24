@@ -27,7 +27,7 @@ public class VerifyOrderSignature extends HttpServlet {
                 json = "{\"success\": false, \"message\": \"Thiếu mã đơn hàng.\"}";
             } else {
                 int orderId = Integer.parseInt(orderIdParam);
-                Order order = orderDao.getOrderById(orderId);
+                Order order = orderDao.selectOrderById(orderId);
 
                 if (order == null) {
                     json = "{\"success\": false, \"message\": \"Không tìm thấy đơn hàng.\"}";
@@ -44,7 +44,7 @@ public class VerifyOrderSignature extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            json = "{\"success\": false, \"message\": \"Lỗi server: " + e.getMessage() + "\"}";
+            json = "{\"success\": false, \"message\": \"Lỗi"+ "\"}";
         }
 
         response.getWriter().write(json);

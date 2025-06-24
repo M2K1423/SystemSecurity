@@ -52,15 +52,19 @@ public class CheckOrder {
                     .append(detail.getAmount()).append("\r\n");
         }
 
+        if (productList.toString().endsWith("\r\n")) {
+            productList.delete(productList.length() - 2, productList.length());
+        }
+
         // Construct raw data string
         return order.getCustomerName().trim() + "\r\n" +
                 order.getPhone() + "\r\n" +
                 order.getId() + "\r\n" +
-                sdf.format(order.getCreatedAt()) + "\r\n" +
+                order.getCreatedAt() + "\r\n" +
                 order.getAddress() + "\r\n" +
                 order.getShippingMethod() + "\r\n" +
-                String.format("%.2f", order.getShippingFee()) + "\r\n" +
-                productList.toString();
+                order.getShippingFee() + "\r\n" +
+                productList;
     }
 
     public static byte[] generateDataByBytes(Order order) {

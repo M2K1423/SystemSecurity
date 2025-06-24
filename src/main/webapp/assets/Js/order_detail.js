@@ -24,6 +24,11 @@ function viewOrderDetails(orderId, rowData) {
             const orderDetails = data.orderDetails;
             const order = data.order;
 
+            if (!order) {
+                console.warn("Không tìm thấy đơn hàng trong dữ liệu trả về:", data);
+                return;
+            }
+
             $("#order_id").text(order.id || "N/A");
             $("#form_of_delivery").text(order.shippingMethod || "N/A");
             $("#delivery_fee").text(order.shippingFee ?? "N/A");
@@ -46,6 +51,7 @@ function viewOrderDetails(orderId, rowData) {
                     .show();
             } else {
                 $("#edit-order-btn").hide();
+                $("#update-signature-btn").hide()
             }
 
             // Gán chi tiết đơn hàng
