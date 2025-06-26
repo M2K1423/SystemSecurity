@@ -170,6 +170,12 @@ document.addEventListener("DOMContentLoaded", function () {
             $("#customer-name").text(rowData.customerName || "N/A");
             $("#customer-address").text(rowData.address || "N/A");
             $("#customer-phone").text(rowData.phone || "N/A");
+            $("#order_id").text(rowData.id || "N/A");
+            $("#create_at").text(rowData.createdAt || "N/A");
+            $("#form_of_delivery").text(rowData.shippingMethod || "N/A");
+            $("#delivery_fee").text(rowData.shippingFee !== undefined ? rowData.shippingFee : "N/A");
+            $("#note").text(rowData.note || "");
+            $("#verification-status").text("Đang xác thực...");
 
             // Gửi yêu cầu lấy chi tiết hóa đơn
             $.ajax({
@@ -218,6 +224,39 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error("Error:", xhr.responseText);
                 },
             });
+
+            // Gán orderId cho nút tải đơn hàng
+            $("#download-order-btn").data("order-id", orderId);
+
+            // Tự động xác thực chữ ký khi mở chi tiết
+            $.ajax({
+                url: "/SystemSecurity_war/verify-order-signature",
+                type: "POST",
+                data: { orderId: orderId },
+                success: function (data) {
+                    if (data && typeof data === 'string') {
+                        try { data = JSON.parse(data); } catch (e) {}
+                    }
+                    if (data && data.success) {
+                        $("#verification-status").text("✅ " + data.message);
+                    } else if (data && data.message) {
+                        $("#verification-status").text("❌ " + data.message);
+                    } else {
+                        $("#verification-status").text("Không xác định được trạng thái xác thực.");
+                    }
+                },
+                error: function () {
+                    $("#verification-status").text("Lỗi xác thực đơn hàng.");
+                }
+            });
+        });
+
+        // Sự kiện tải đơn hàng
+        $(document).on("click", "#download-order-btn", function () {
+            const orderId = $(this).data("order-id");
+            if (orderId) {
+                window.open(`/SystemSecurity_war/download-order?orderId=${orderId}`, '_blank');
+            }
         });
 
         // Đóng overlay

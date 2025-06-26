@@ -112,22 +112,36 @@
                                 <i class="fa-solid fa-xmark"></i>
                             </div>
                         </div>
+                        <p style="padding-bottom:10px">
+                            Mã đơn hàng: <span id="order_id">N/A</span>
+                        </p>
+                        <p style="padding-bottom:10px">
+                            Ngày tạo: <span id="create_at">N/A</span>
+                        </p>
+                        <p style="padding-bottom:10px">
+                            Hình thức giao hàng: <span id="form_of_delivery">N/A</span>
+                        </p>
+                        <p style="padding-bottom:10px">
+                            Phí giao hàng: <span id="delivery_fee"></span>
+                        </p>
+                        <p style="border-bottom: 1px solid #dadada; padding-bottom:10px">
+                            Ghi chú: <span id="note"></span>
+                        </p>
                         <div class="customer-info-invoice">
                             <p>THÔNG TIN KHÁCH HÀNG</p>
                             <p>
                                 <strong>Tên:</strong>
-                                <span id="customer-name">Nguyễn Văn A</span>
+                                <span id="customer-name">N/A</span>
                             </p>
                             <p>
                                 <strong>Địa chỉ:</strong>
-                                <span id="customer-address">123 Đường ABC</span>
+                                <span id="customer-address">N/A</span>
                             </p>
                             <p>
                                 <strong>Số điện thoại:</strong>
-                                <span id="customer-phone">0987654321</span>
+                                <span id="customer-phone">N/A</span>
                             </p>
                         </div>
-
                         <div class="order-items">
                             <h4>SẢN PHẨM MUA</h4>
                             <table class="items-table">
@@ -145,12 +159,20 @@
                                 </tbody>
                             </table>
                         </div>
-
                         <div class="total-price">
                             <p>
                                 <strong>TỔNG TIỀN:</strong>
                                 <span id="total-amount">0 VND</span>
                             </p>
+                        </div>
+                        <div class="verification-result" style="padding-top: 10px;">
+                            <p>
+                                <strong>Trạng thái xác thực:</strong>
+                                <span id="verification-status">Chưa xác thực</span>
+                            </p>
+                        </div>
+                        <div class="edit-order-wrapper">
+                            <button id="download-order-btn">Tải đơn hàng</button>
                         </div>
                     </div>
                 </div>
