@@ -1,4 +1,5 @@
 package com.example.webbongden.controller.UserController;
+import com.example.webbongden.websocket.OrderNotificationSocket;
 
 import com.example.webbongden.dao.model.Cart;
 import com.example.webbongden.dao.model.CartItem;
@@ -51,6 +52,7 @@ public class EditOrderController extends HttpServlet {
             }
             // Đặt trạng thái đơn hàng là Huỷ
             orderServices.updateOrderStatus(orderId,"Huỷ");
+            OrderNotificationSocket.broadcast("Đơn hàng #" + orderId + " vừa bị huỷ và trả lại vào giỏ hàng!");
 
             HttpSession session = request.getSession();
             Cart cart = (Cart) session.getAttribute("cart");

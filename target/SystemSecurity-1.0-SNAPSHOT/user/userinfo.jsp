@@ -231,13 +231,13 @@
                                     <span class="badge badge-danger">❌ Chưa ký</span>
                                     <% } %>
                                 </td>
-                                <td>
-                                    <% if (order.isValid()) { %>
-                                    <span class="badge badge-success">✅ Đã kiểm tra</span>
-                                    <% } else { %>
-                                    <span class="badge badge-danger">❌ Chưa kiểm tra</span>
-                                    <% } %>
-                                </td>
+<%--                                <td>--%>
+<%--                                    <% if (order.isValid()) { %>--%>
+<%--                                    <span class="badge badge-success">✅ Đã kiểm tra</span>--%>
+<%--                                    <% } else { %>--%>
+<%--                                    <span class="badge badge-danger">❌ Chưa kiểm tra</span>--%>
+<%--                                    <% } %>--%>
+<%--                                </td>--%>
                             </tr>
                             <%
                                 }

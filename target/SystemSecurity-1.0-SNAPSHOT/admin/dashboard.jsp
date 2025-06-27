@@ -15,6 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="./img/logo-fold.png" sizes="180x180" />
     <title>Admin</title>
+
     <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
@@ -226,6 +227,56 @@
         </div>
     </div>
 </div>
+<script>
+    const socket = new WebSocket("ws://localhost:8080/SystemSecurity_war/ws/order");
+
+    let notifCount = 0;
+    let notifications = [];
+
+    const badge = document.getElementById("notif-badge");
+    const notifList = document.getElementById("notif-list");
+    const notifUl = document.getElementById("notif-ul");
+
+    socket.onmessage = function(event) {
+        notifCount++;
+        badge.textContent = notifCount;
+        badge.style.display = "inline-block";
+        notifications.unshift(event.data);
+
+        // Thêm vào popup danh sách
+        const li = document.createElement("li");
+        li.innerHTML = "🔔 " + event.data + " <span style='float:right; color:#888; font-size:12px'>" + (new Date()).toLocaleTimeString() + "</span>";
+        notifUl.prepend(li);
+
+        // Optional: Toast nổi ở góc dưới
+        const toast = document.createElement('div');
+        toast.innerText = '🔔 ' + event.data;
+        toast.style.cssText =
+            "position: fixed; bottom: 24px; right: 30px; background: #28a745;" +
+            "color: white; padding: 15px; border-radius: 5px; font-weight: bold;" +
+            "z-index: 9999; box-shadow: 0 4px 8px rgba(0,0,0,0.15); font-size:16px;";
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.remove(); }, 4000);
+    };
+
+    // Click chuông để mở/tắt popup danh sách thông báo
+    document.getElementById("admin-notification").onclick = function(e) {
+        notifList.style.display = notifList.style.display === "block" ? "none" : "block";
+        badge.textContent = "0";
+        notifCount = 0;
+        badge.style.display = "none";
+        // Ngăn sự kiện click ảnh hưởng lên các nút khác
+        e.stopPropagation();
+    };
+
+    // Ẩn popup nếu click ra ngoài
+    document.body.addEventListener('click', function() {
+        notifList.style.display = "none";
+    });
+</script>
+
+
+
 <script src="${pageContext.request.contextPath}/admin/admin_js/dashboardAdmin.js?v=2.0" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

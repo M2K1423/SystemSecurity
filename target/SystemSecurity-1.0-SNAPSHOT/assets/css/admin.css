@@ -1252,19 +1252,22 @@ table {
 }
 
 .order-table th:nth-child(2) {
-  width: 30%; /* Khách Hàng */
+  width: 20%; /* Khách Hàng */
 }
 
 .order-table th:nth-child(3),
 .order-table td:nth-child(3) {
-  width: 25%; /* Ngày Đặt */
+  width: 20%; /* Ngày Đặt */
 }
 
 .order-table th:nth-child(4),
 .order-table td:nth-child(4) {
-  width: 25%; /* Trạng Thái */
+  width: 20%; /* Trạng Thái */
 }
-
+.order-table th:nth-child(5),
+.order-table td:nth-child(5) {
+  width: 20%;
+}
 /* Thu nhỏ thanh cuộn cho tbody */
 .order-table tbody::-webkit-scrollbar {
   width: 6px; /* Độ rộng của thanh cuộn */
