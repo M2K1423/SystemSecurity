@@ -225,11 +225,14 @@
                                     <%
                                         System.out.println("Order ID: " + order.getId() + ", isSigned: " + order.isSigned());
                                     %>
-                                    <% if (order.isSigned()) { %>
-                                    <span class="badge badge-success">✅ Đã ký</span>
+                                    <% if(order.isSigned()) { %>
+                                    <span class="badge badge-success">✅️ Đã ký</span>
                                     <% } else { %>
-                                    <span class="badge badge-danger">❌ Chưa ký</span>
+                                    <a href="<%=request.getContextPath()%>/user/confirm-signature?id=<%=order.getId()%>">
+                                        <span class="badge badge-danger">❌ Chưa ký</span>
+                                    </a>
                                     <% } %>
+
                                 </td>
 <%--                                <td>--%>
 <%--                                    <% if (order.isValid()) { %>--%>

@@ -2,6 +2,7 @@ package com.example.webbongden.controller.UserController;
 
 import com.example.webbongden.dao.model.Account;
 import com.example.webbongden.services.AccountServices;
+import com.example.webbongden.services.OrderSevices;
 import com.example.webbongden.services.PublicKeyServices;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -13,6 +14,7 @@ import java.security.GeneralSecurityException;
 @WebServlet(name = "PublicKeyController", value = "/edit-publicKey")
 public class PublicKeyController extends HttpServlet {
     private final PublicKeyServices publicKeyServices = new PublicKeyServices();
+    private final OrderSevices orderServices = new OrderSevices();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -40,14 +42,12 @@ public class PublicKeyController extends HttpServlet {
             String publicKey = request.getParameter("publicKey");
             String authPassword = request.getParameter("authPassword");
 
-            //Khoá công khai trống hoặc chỉ chứa khí tự khoảng trắng, tab
             if (publicKey == null || publicKey.trim().isEmpty()) {
                 json = "{\"success\": false, \"message\": \"Thiếu khóa công khai.\"}";
                 response.getWriter().write(json);
                 return;
             }
 
-            // Làm sạch chuỗi khóa công khai: loại bỏ phần header/footer và các khoảng trắng thừa
             String cleanedKey = publicKey
                     .replace("-----BEGIN PUBLIC KEY-----", "")
                     .replace("-----END PUBLIC KEY-----", "")
@@ -55,8 +55,7 @@ public class PublicKeyController extends HttpServlet {
 
             Account account = (Account) session.getAttribute("account");
             if (account == null) {
-                // Nếu không tìm thấy thông tin tài khoản trong session, chuyển hướng về trang login
-                response.sendRedirect("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+                response.sendRedirect("/login");
                 return;
             }
 
@@ -69,16 +68,17 @@ public class PublicKeyController extends HttpServlet {
                 return;
             }
 
-            // Gọi phương thức có thể ném ra lỗi
             try {
                 publicKeyServices.updatePublicKey(accountId);
                 if(publicKeyServices.addPublicKey(accountId, cleanedKey)){
+                    // ------ Thêm dòng này để reset trạng thái ký ------
+                    orderServices.resetAllSignatureOfAccount(accountId);
+                    // ---------------------------------------------------
                     json = "{\"success\": true, \"message\": \"Cập nhật khoá công khai thành công.\"}";
                 } else {
                     json = "{\"success\": false, \"message\": \"Cập nhật khoá thất bại.\"}";
                 }
             } catch (GeneralSecurityException | IllegalArgumentException e) {
-                // Bắt lỗi nếu khoá sai định dạng
                 json = "{\"success\": false, \"message\": \"Khoá công khai không hợp lệ.\"}";
             }
 

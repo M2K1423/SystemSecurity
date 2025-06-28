@@ -19,6 +19,14 @@ public class OrderDao {
         jdbi = JDBIConnect.get();
     }
 
+    public int resetAllSignatureOfAccount(int accountId) {
+        String sql = "UPDATE orders SET is_signed = 0, digital_signature = NULL WHERE account_id = :accountId";
+        return jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("accountId", accountId)
+                        .execute()
+        );
+    }
 
 
     public List<Order> getOrdersByAccount(int accountId) {
@@ -428,22 +436,33 @@ public class OrderDao {
                         .list()
         );
     }
-
-
     public static void main(String[] args) {
-        OrderDao orderDao = new OrderDao();
+        // Giả sử jdbi đã được config, inject hoặc truyền vào, bạn chỉ cần gọi hàm test thôi!
+        int accountId = 9; // Thay bằng ID user muốn reset
 
-        List<Order> orders = orderDao.getOrdersInLastMonth();
+        // Giả sử đã có đối tượng orderDao sẵn
+        OrderDao orderDao = new OrderDao(); // hàm này trả về OrderDao đã có Jdbi (tùy project bạn)
 
-        for (Order order : orders) {
-            System.out.println("Order ID: " + order.getId());
-            System.out.println("Customer Name: " + order.getCustomerName());
-            System.out.println("Created At: " + order.getCreatedAt());
-            System.out.println("Order Status: " + order.getOrderStatus());
-            System.out.println("isSigned: " + order.isSigned());
-            System.out.println("---------------------------");
-        }
+        int rows = orderDao.resetAllSignatureOfAccount(accountId);
+        System.out.println("Số dòng đã reset: " + rows);
+
+        // Có thể test thêm các trường hợp truyền accountId không tồn tại, v.v.
     }
+
+//    public static void main(String[] args) {
+//        OrderDao orderDao = new OrderDao();
+//
+//        List<Order> orders = orderDao.getOrdersInLastMonth();
+//
+//        for (Order order : orders) {
+//            System.out.println("Order ID: " + order.getId());
+//            System.out.println("Customer Name: " + order.getCustomerName());
+//            System.out.println("Created At: " + order.getCreatedAt());
+//            System.out.println("Order Status: " + order.getOrderStatus());
+//            System.out.println("isSigned: " + order.isSigned());
+//            System.out.println("---------------------------");
+//        }
+//    }
 
     public Order selectOrderById(int orderId) {
         String sql = """
@@ -497,6 +516,8 @@ public class OrderDao {
                         .orElse(null)
         );
     }
+
+
 }
 
 

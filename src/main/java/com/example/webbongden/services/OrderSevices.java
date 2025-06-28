@@ -148,7 +148,9 @@ public class OrderSevices {
         }
     }
 
-
+    public void resetAllSignatureOfAccount(int accountId) {
+        orderDao.resetAllSignatureOfAccount(accountId);
+    }
     public void updateOrderStatus(int orderId, boolean isSigned) {
         orderDao.updateOrderStatus(orderId, isSigned);
     }

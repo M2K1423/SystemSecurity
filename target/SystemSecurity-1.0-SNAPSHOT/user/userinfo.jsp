@@ -222,12 +222,17 @@
                                 </td>
 
                                 <td>
+                                    <%
+                                        System.out.println("Order ID: " + order.getId() + ", isSigned: " + order.isSigned());
+                                    %>
                                     <% if(order.isSigned()) { %>
-                                    <span class="badge badge-success">✔️ Đã ký</span>
+                                    <span class="badge badge-success">✅️ Đã ký</span>
                                     <% } else { %>
-                                    <a href="confirm-signature.jsp?id=<%=order.getId()%>">Xác nhận</a>
-                                    <span class="badge badge-danger">❌ Chưa ký</span>
+                                    <a href="<%=request.getContextPath()%>/user/confirm-signature?id=<%=order.getId()%>">
+                                        <span class="badge badge-danger">❌ Chưa ký</span>
+                                    </a>
                                     <% } %>
+
                                 </td>
 <%--                                <td>--%>
 <%--                                    <% if (order.isValid()) { %>--%>
