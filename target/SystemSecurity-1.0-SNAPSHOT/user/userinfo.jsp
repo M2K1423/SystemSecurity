@@ -196,7 +196,7 @@
                                 <th>Tải hóa đơn</th>
                                 <th>Chi tiết đơn hàng</th>
                                 <th>Xác thực</th>
-                                <th>Kiểm tra lại đơn hàng</th>
+<%--                                <th>Kiểm tra lại đơn hàng</th>--%>
                             </tr>
                             </thead>
                             <tbody>
@@ -222,12 +222,10 @@
                                 </td>
 
                                 <td>
-                                    <%
-                                        System.out.println("Order ID: " + order.getId() + ", isSigned: " + order.isSigned());
-                                    %>
-                                    <% if (order.isSigned()) { %>
-                                    <span class="badge badge-success">✅ Đã ký</span>
+                                    <% if(order.isSigned()) { %>
+                                    <span class="badge badge-success">✔️ Đã ký</span>
                                     <% } else { %>
+                                    <a href="confirm-signature.jsp?id=<%=order.getId()%>">Xác nhận</a>
                                     <span class="badge badge-danger">❌ Chưa ký</span>
                                     <% } %>
                                 </td>

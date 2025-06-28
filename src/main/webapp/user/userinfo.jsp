@@ -196,7 +196,7 @@
                                 <th>Tải hóa đơn</th>
                                 <th>Chi tiết đơn hàng</th>
                                 <th>Xác thực</th>
-                                <th>Kiểm tra lại đơn hàng</th>
+<%--                                <th>Kiểm tra lại đơn hàng</th>--%>
                             </tr>
                             </thead>
                             <tbody>
