@@ -173,7 +173,7 @@
 
                     <div class="order-table-container" id="orderTableContainer">
                         <%  Account account = (Account) session.getAttribute("account");
-                            List<Order> orders = (List<Order>) session.getAttribute("orders");
+                            List<Order> orders = (List<Order>) request.getAttribute("orders");
                             if (orders != null && !orders.isEmpty()) {
                         %>
                         <table class="order-table" border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">
