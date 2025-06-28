@@ -489,6 +489,21 @@ public class OrderDao {
                         .execute()
         );
     }
+
+    public String getPublicKeyByOrderId(int orderId) {
+        String sql = """
+            SELECT public_key FROM public_keys JOIN orders ON orders.pk_id = public_keys.id WHERE orders.id = :orderId
+            """;
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("orderId", orderId)
+                        .mapTo(String.class)
+                        .findOne()
+                        .orElse(null)
+        );
+    }
+
 }
 
 

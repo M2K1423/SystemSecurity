@@ -1,5 +1,6 @@
 package com.example.webbongden.services;
 
+import com.example.webbongden.dao.OrderDao;
 import com.example.webbongden.dao.UserDao;
 
 import java.security.GeneralSecurityException;
@@ -30,6 +31,11 @@ public class PublicKeyServices {
 
     public com.example.webbongden.dao.model.PublicKey getPublicKey(int customerId){
         return userDao.getPublicKey(customerId);
+    }
+
+    public String getPublicKeyString(int orderId){
+        OrderDao orderDao = new OrderDao();
+        return orderDao.getPublicKeyByOrderId(orderId);
     }
 
 }

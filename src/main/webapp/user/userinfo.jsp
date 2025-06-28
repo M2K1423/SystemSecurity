@@ -185,7 +185,7 @@
                                 <th>Trạng thái</th>
                                 <th>Tải hóa đơn</th>
                                 <th>Chi tiết đơn hàng</th>
-                                <th>Xác thực</th>
+<%--                                <th>Xác thực</th>--%>
                             </tr>
                             </thead>
                             <tbody>
@@ -206,13 +206,13 @@
                                 <td>
                                     <button class="change-order-btn" data-id="<%= order.getId() %>">Xem chi tiết</button>
                                 </td>
-                                <td>
-                                    <% if (order.isSigned()) { %>
-                                    <span class="badge badge-success">✅ Đã ký</span>
-                                    <% } else { %>
-                                    <span class="badge badge-danger">❌ Chưa ký</span>
-                                    <% } %>
-                                </td>
+<%--                                <td>--%>
+<%--                                    <% if (order.isSigned()) { %>--%>
+<%--                                    <span class="badge badge-success">✅ Đã ký</span>--%>
+<%--                                    <% } else { %>--%>
+<%--                                    <span class="badge badge-danger">❌ Chưa ký</span>--%>
+<%--                                    <% } %>--%>
+<%--                                </td>--%>
                             </tr>
                             <%
                                 }

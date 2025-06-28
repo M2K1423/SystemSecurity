@@ -19,12 +19,12 @@ public class CheckOrder {
 
     public static String getPublickey(Order order) {
         PublicKeyServices publicKeyServices = new PublicKeyServices();
-        int accountId = order.getAccountId();
-        com.example.webbongden.dao.model.PublicKey pubKey = publicKeyServices.getPublicKey(accountId);
-        if (pubKey == null || pubKey.getPublicKey() == null) {
-            throw new RuntimeException("Không tìm thấy public key cho tài khoản ID: " + accountId);
+        int orderId = order.getId();
+        String pubKey = publicKeyServices.getPublicKeyString(orderId);
+        if (pubKey == null) {
+            throw new RuntimeException("Không tìm thấy public key cho tài khoản ID: " + orderId);
         }
-        return pubKey.getPublicKey();
+        return pubKey;
     }
 
     public static PublicKey decodePublicKey(String base64PublicKey) throws Exception {

@@ -28,7 +28,7 @@ public class DownloadOrderServlet extends HttpServlet {
         }
 
         // Fetch order details
-        Order order = orderDao.getOrderById(Integer.parseInt(orderId));
+        Order order = orderDao.selectOrderById(Integer.parseInt(orderId));
         List<OrderDetail> orderDetails = orderDao.getOrderDetailsByOrderId(Integer.parseInt(orderId));
 
         if (order == null) {
@@ -45,10 +45,10 @@ public class DownloadOrderServlet extends HttpServlet {
         content.append(order.getCustomerName().trim()).append("\r\n")
                 .append(order.getPhone()).append("\r\n")
                 .append(order.getId()).append("\r\n")
-                .append(sdf.format(order.getCreatedAt())).append("\r\n")
+                .append(order.getCreatedAt()).append("\r\n")
                 .append(order.getAddress()).append("\r\n")
                 .append(order.getShippingMethod()).append("\r\n")
-                .append(String.format("%.2f", order.getShippingFee())).append("\r\n");
+                .append(order.getShippingFee()).append("\r\n");
 
         for (OrderDetail detail : orderDetails) {
             content.append(detail.getProductId()).append("\r\n")
