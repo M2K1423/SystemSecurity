@@ -224,6 +224,44 @@ function updateQuantity(button, change) {
       });
 }
 
+// Tính khoảng cách giữa các nav-item
+function updateAfterWidth() {
+  const items = document.querySelectorAll('.nav-item');
+  //lấy 2 nav-item đầu tiên nếu có
+  if (items.length >= 2) {
+    const rect1 = items[0].getBoundingClientRect();
+    const rect2 = items[1].getBoundingClientRect();
+    // tính khoảng cách từ cạnh trái nav-item2 đến cạnh phải nav-item1
+    const width = rect2.left - rect1.right;
+
+    // set lại css
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .nav-item:not(:first-child)::after {
+        width: ${width}px !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Delay 1 animation frame để đảm bảo layout ổn định
+  requestAnimationFrame(() => {
+    updateAfterWidth();
+  });
+});
+
+// tính khoảng cách giữa các nav-item sau khi load
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    updateAfterWidth();
+  }, 50); // chờ thêm 50ms sau khi load xong
+});
+
+// tính khoảng cách giữa các nav-item sau khi resize
+window.addEventListener('resize', updateAfterWidth);
+
 
 
 

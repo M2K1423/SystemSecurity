@@ -195,7 +195,6 @@
                         <a href="/SystemSecurity_war/cart#cus-info">
                             <button class="buy-btn" data-tab="cus-info">ĐẶT HÀNG NGAY</button>
                         </a>
-                        <% System.out.println(pk.getId()); %>
                     <% } else { %>
                         <button class="buy-btn">
                             <a href="/SystemSecurity_war/userinfo">
