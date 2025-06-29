@@ -213,6 +213,31 @@ public class OrderDao {
     }
 
 
+    public List<Order> selectListOrders() {
+        String sql = "SELECT o.id AS orderId, " +
+                "o.created_at AS orderDate, " +
+                "o.total_price AS totalPrice, " +
+                "s.address AS shippingAddress, o.order_status AS status, o.recipient_name AS customerName " +
+                "FROM orders o " +
+                "JOIN shipping s ON o.id = s.order_id";
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .map((rs, ctx) -> {
+                            Order order = new Order(
+                                    rs.getInt("orderId"),
+                                    rs.getString("customerName"),
+                                    rs.getDate("orderDate"),
+                                    rs.getDouble("totalPrice"),
+                                    rs.getString("shippingAddress"),
+                                    rs.getString("status"),
+                                    getOrderDetailsByOrderId(rs.getInt("orderId"))
+                            );
+                            return order;
+                        })
+                        .list()
+        );
+    }
 
 
     // Lấy danh sách chi tiết đơn hàng theo orderId
@@ -427,16 +452,12 @@ public class OrderDao {
             o.note AS note,
             o.shipping_fee AS shippingFee,
             o.shipping_method AS shippingMethod,
-            o.hash_value AS hashValue,
-            o.digital_cert AS digitalCert,
             o.digital_signature AS digitalSignature,
-            o.is_signed, -- Không alias, giữ nguyên tên cột gốc
             o.recipient_name AS recipientName,
             o.recipient_phone AS recipientPhone,
             o.pk_id AS pkId,
             s.address AS shippingAddress,
-            pk.public_key AS publicKey,
-            o.account_id AS accountId
+            pk.public_key AS publicKey
         FROM orders o
         JOIN shipping s ON o.id = s.order_id
         JOIN public_keys pk ON o.pk_id = pk.id
@@ -455,19 +476,12 @@ public class OrderDao {
                             order.setOrderStatus(rs.getString("orderStatus"));
                             order.setShippingFee(rs.getDouble("shippingFee"));
                             order.setShippingMethod(rs.getString("shippingMethod"));
-                            order.setHashValue(rs.getString("hashValue"));
-                            order.setDigitalCert(rs.getString("digitalCert"));
                             order.setDigitalSignature(rs.getString("digitalSignature"));
                             order.setCustomerName(rs.getString("recipientName"));
                             order.setPhone(rs.getString("recipientPhone"));
                             order.setAddress(rs.getString("shippingAddress"));
                             order.setPkId(rs.getInt("pkId"));
                             order.setPublicKey(rs.getString("publicKey"));
-                            order.setAccountId(rs.getInt("accountId"));
-                            // Lấy đúng cột is_signed không alias
-                            boolean isSigned = rs.getBoolean("is_signed");
-                            System.out.println("Debug getOrderById - orderId=" + order.getId() + ", isSigned=" + isSigned);
-                            order.setSigned(isSigned);
 
                             return order;
                         })
