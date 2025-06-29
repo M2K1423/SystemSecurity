@@ -64,6 +64,7 @@ public class CheckOrder {
                 order.getAddress() + "\r\n" +
                 order.getShippingMethod() + "\r\n" +
                 order.getShippingFee() + "\r\n" +
+                order.getTotalPrice() + "\r\n" +
                 productList;
     }
 

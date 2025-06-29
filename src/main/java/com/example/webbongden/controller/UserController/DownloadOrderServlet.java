@@ -1,4 +1,4 @@
-        package com.example.webbongden.controller.UserController;
+package com.example.webbongden.controller.UserController;
 
 import com.example.webbongden.dao.OrderDao;
 import com.example.webbongden.dao.model.Order;
@@ -9,15 +9,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.TimeZone;
 
 @WebServlet(name = "DownloadOrderServlet", urlPatterns = "/download-order")
 public class DownloadOrderServlet extends HttpServlet {
-    private OrderDao orderDao = new OrderDao();
+    private final OrderDao orderDao = new OrderDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -48,7 +50,8 @@ public class DownloadOrderServlet extends HttpServlet {
                 .append(order.getCreatedAt()).append("\r\n")
                 .append(order.getAddress()).append("\r\n")
                 .append(order.getShippingMethod()).append("\r\n")
-                .append(order.getShippingFee()).append("\r\n");
+                .append(order.getShippingFee()).append("\r\n")
+                .append(order.getTotalPrice()).append("\r\n");
 
         for (OrderDetail detail : orderDetails) {
             content.append(detail.getProductId()).append("\r\n")
@@ -64,7 +67,7 @@ public class DownloadOrderServlet extends HttpServlet {
 
         // Write content to response
         try (OutputStream out = response.getOutputStream()) {
-            out.write(content.toString().getBytes("UTF-8"));
+            out.write(content.toString().getBytes(StandardCharsets.UTF_8));
             out.flush();
         }
     }
