@@ -40,7 +40,8 @@ public class OrderSevices {
     }
 
     public List<Order> getAllOrders() {
-        return orderDao.getListOrders();
+//        return orderDao.getListOrders();
+        return orderDao.selectListOrders();
     }
 
     public List<Order> getOrdersInLastMonth() {
@@ -101,41 +102,41 @@ public class OrderSevices {
             if (order == null) throw new RuntimeException("Không tìm thấy đơn hàng sau khi tạo.");
 
             // ✅ Bước 7: Tạo rawData (chuỗi cần ký) và hash
-            String rawData = generateRawData(order.getId(), order.getCustomerName(), order.getTotalPrice(), order.getCreatedAt());
-            byte[] rawDataBytes = rawData.getBytes(StandardCharsets.UTF_8);
-            String hashBase64 = Base64.getEncoder().encodeToString(
-                    MessageDigest.getInstance("SHA-256").digest(rawDataBytes)
-            );
-            orderDao.updateOrderHash(orderId, hashBase64);
-            System.out.println("✅ Mã hash đơn hàng #" + orderId + ": " + hashBase64);
-            System.out.println("🔐 rawData = " + rawData);
-
-            // ✅ Bước 8: Ký số
-            try {
-                URL keystoreURL = getClass().getClassLoader().getResource("keystore.p12");
-                if (keystoreURL == null) {
-                    throw new RuntimeException("❌ Không tìm thấy file keystore.p12 trong resources/");
-                }
-
-                KeyStore keyStore = KeyStore.getInstance("PKCS12");
-                try (InputStream is = new FileInputStream(keystoreURL.getPath())) {
-                    keyStore.load(is, "keystorePassword".toCharArray()); // sửa mật khẩu nếu khác
-                }
-
-                String alias = keyStore.aliases().nextElement();
-                PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, "keystorePassword".toCharArray());
-                X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
-
-                byte[] signatureBytes = signData(rawDataBytes, privateKey);
-                String signatureBase64 = Base64.getEncoder().encodeToString(signatureBytes);
-                String certBase64 = Base64.getEncoder().encodeToString(cert.getEncoded());
-
-                orderDao.updateDigitalSignature(orderId, signatureBase64, certBase64, hashBase64);
-                System.out.println("✅ Đã lưu chữ ký số cho đơn hàng #" + orderId);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("❌ Lỗi khi ký số đơn hàng #" + orderId);
-            }
+//            String rawData = generateRawData(order.getId(), order.getCustomerName(), order.getTotalPrice(), order.getCreatedAt());
+//            byte[] rawDataBytes = rawData.getBytes(StandardCharsets.UTF_8);
+//            String hashBase64 = Base64.getEncoder().encodeToString(
+//                    MessageDigest.getInstance("SHA-256").digest(rawDataBytes)
+//            );
+//            orderDao.updateOrderHash(orderId, hashBase64);
+//            System.out.println("✅ Mã hash đơn hàng #" + orderId + ": " + hashBase64);
+//            System.out.println("🔐 rawData = " + rawData);
+//
+//            // ✅ Bước 8: Ký số
+//            try {
+//                URL keystoreURL = getClass().getClassLoader().getResource("keystore.p12");
+//                if (keystoreURL == null) {
+//                    throw new RuntimeException("❌ Không tìm thấy file keystore.p12 trong resources/");
+//                }
+//
+//                KeyStore keyStore = KeyStore.getInstance("PKCS12");
+//                try (InputStream is = new FileInputStream(keystoreURL.getPath())) {
+//                    keyStore.load(is, "keystorePassword".toCharArray()); // sửa mật khẩu nếu khác
+//                }
+//
+//                String alias = keyStore.aliases().nextElement();
+//                PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, "keystorePassword".toCharArray());
+//                X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
+//
+//                byte[] signatureBytes = signData(rawDataBytes, privateKey);
+//                String signatureBase64 = Base64.getEncoder().encodeToString(signatureBytes);
+//                String certBase64 = Base64.getEncoder().encodeToString(cert.getEncoded());
+//
+//                orderDao.updateDigitalSignature(orderId, signatureBase64, certBase64, hashBase64);
+//                System.out.println("✅ Đã lưu chữ ký số cho đơn hàng #" + orderId);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                System.err.println("❌ Lỗi khi ký số đơn hàng #" + orderId);
+//            }
 
             return orderId;
 
