@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="./img/logo-fold.png" sizes="180x180" />
+    <link rel="icon" href="./assets/img/logo-fold.png" sizes="180x180" />
     <title>Thông tin khách hàng</title>
     <link
             rel="stylesheet"
@@ -46,7 +46,7 @@
             <div class="sidebar-info-customer">
                 <div class="customer-info">
                     <img
-                            src="./img/b79144e03dc4996ce319ff59118caf65.jpg"
+                            src="./assets/img/b79144e03dc4996ce319ff59118caf65.jpg"
                             alt="avatarUser"
                     />
                     <p class="customer-name">${userInfo.customerName}</p>
@@ -162,6 +162,7 @@
                         <div class="key-btn">
                             <button type="submit" id ="save-publicKey" style="display : none;">Xác nhận</button>
                             <button type="button" id ="edit-publicKey">Cập nhật khoá</button>
+                            <button type="submit" id ="leaked-privateKey" style="display : none;">Báo cáo lộ khóa</button>
                         </div>
                     </form>
                 </div>
@@ -422,6 +423,7 @@
         });
         document.getElementById('edit-publicKey').style.display = 'none';
         document.getElementById('save-publicKey').style.display = 'inline-block';
+        document.getElementById('leaked-privateKey').style.display = 'inline-block'
     });
 
     document.getElementById('save-publicKey').addEventListener('click', function (e) {
@@ -429,6 +431,7 @@
         const formData = {
             publicKey: document.getElementById('publicKey').value,
             authPassword: document.getElementById('auth-password').value,
+            actionType: 'save'
         };
         $.ajax({
             url: '/SystemSecurity_war/edit-publicKey',
@@ -454,5 +457,32 @@
             }
         });
     });
+
+    document.getElementById('leaked-privateKey').addEventListener('click', function (e) {
+        e.preventDefault();
+        const formData = {
+            publicKey: document.getElementById('publicKey').value,
+            authPassword: document.getElementById('auth-password').value,
+            actionType: 'leaked' // hành động là báo cáo lộ khóa
+        };
+
+        $.ajax({
+            url: '/SystemSecurity_war/edit-publicKey',
+            type: 'POST',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire('Đã báo cáo!', response.message, 'success');
+                } else {
+                    Swal.fire('Lỗi!', response.message, 'error');
+                }
+            },
+            error: function () {
+                Swal.fire('Lỗi!', 'Không thể kết nối đến máy chủ.', 'error');
+            }
+        });
+    });
+
 </script>
 </html>

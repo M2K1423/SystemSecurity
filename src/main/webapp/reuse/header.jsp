@@ -77,7 +77,7 @@
 
                     <div class="user-info-dropdown">
                         <div class="dropdown-header">
-                            <img src="./img/icon-dropdownuser.png" alt="" />
+                            <img src="./assets/img/icon-dropdownuser.png" alt="" />
                             <p>Xin chào <span><%= username != null ? username : "Khách" %>.</span></p>
                         </div>
                         <div class="dropdown-content">
@@ -141,7 +141,7 @@
             </li>
             <li><a href="News.html">TIN TỨC</a></li>
             <li><a href="Contact.html">LIÊN HỆ</a></li>
-            <li><a href="https://drive.google.com/uc?export=download&id=1xPcsJ7fLu6Znur8eehye6G2iqvG-Yrsp">TẢI ỨNG DỤNG</a><li>
+            <li><a href="https://drive.usercontent.google.com/download?id=1m7sxy13MU5OJGIK9pwExP3F2pRcaXkTk&export=download&authuser=0">TẢI ỨNG DỤNG</a><li>
             <li><a href="https://drive.google.com/uc?export=download&id=1dWRiMQDHrvB7bqYzksNxVGURNFq4cvd6
 ">Tải tool kí xác thực </a></li>
         </ul>
