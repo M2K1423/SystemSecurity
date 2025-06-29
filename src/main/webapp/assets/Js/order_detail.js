@@ -71,11 +71,20 @@ function viewOrderDetails(orderId, rowData) {
                 `);
             });
 
-            const totalAmount = orderDetails.reduce((total, item) => total + parseFloat(item.amount), 0);
-            $("#total-amount").text(totalAmount.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-            }));
+            // const totalAmount = orderDetails.reduce((total, item) => total + parseFloat(item.amount), 0);
+            // $("#total-amount").text(totalAmount.toLocaleString("vi-VN", {
+            //     style: "currency",
+            //     currency: "VND",
+            // }));
+
+            $("#total-amount").text(
+                order.totalPrice !== undefined
+                    ? parseFloat(order.totalPrice).toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    })
+                    : "N/A"
+            );
 
             // Gửi AJAX để kiểm tra chữ ký
             $.ajax({

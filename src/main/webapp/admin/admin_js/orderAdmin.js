@@ -178,21 +178,64 @@ document.addEventListener("DOMContentLoaded", function () {
             $("#verification-status").text("Đang xác thực...");
 
             // Gửi yêu cầu lấy chi tiết hóa đơn
+            //chi tiết đơn hàng cũ
+            // $.ajax({
+            //     url: "/SystemSecurity_war/order-detail",
+            //     type: "GET",
+            //     data: { orderId: orderId },
+            //     success: function (data) {
+            //         // Parse dữ liệu từ response
+            //         const orderDetails = data;
+            //         const $orderItemsBody = $("#order-items-body");
+            //
+            //         // Xóa nội dung cũ
+            //         $orderItemsBody.empty();
+            //
+            //         // Duyệt qua danh sách sản phẩm và thêm vào bảng
+            //         orderDetails.forEach((item) => {
+            //             $orderItemsBody.append(`
+            //                 <tr>
+            //                     <td>${item.productId}</td>
+            //                     <td>${item.productName}</td>
+            //                     <td>${item.quantity}</td>
+            //                     <td>${parseFloat(item.unitPrice).toLocaleString("vi-VN", {
+            //                 style: "currency",
+            //                 currency: "VND",
+            //             })}</td>
+            //                     <td>${parseFloat(item.amount).toLocaleString("vi-VN", {
+            //                 style: "currency",
+            //                 currency: "VND",
+            //             })}</td>
+            //                 </tr>
+            //             `);
+            //         });
+
+            // lấy chi tiết đơn hàng mới
             $.ajax({
-                url: "/SystemSecurity_war/order-detail",
+                url: "/SystemSecurity_war/order-info",
                 type: "GET",
-                data: { orderId: orderId },
+                data: {orderId: orderId},
                 success: function (data) {
-                    // Parse dữ liệu từ response
-                    const orderDetails = data;
-                    const $orderItemsBody = $("#order-items-body");
+                    const orderDetails = data.orderDetails;
+                    const order = data.order;
 
-                    // Xóa nội dung cũ
-                    $orderItemsBody.empty();
+                    $("#form_of_delivery").text(order.shippingMethod || "N/A");
+                    $("#note").text(order.note || "");
+                    $("#customer-phone").text(order.phone || "N/A");
+                    $("#total-amount").text(
+                        order.totalPrice !== undefined
+                            ? parseFloat(order.totalPrice).toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                            })
+                            : "N/A"
+                    );
+                    const $orderTableBody = $("#order-items-body");
+                    $orderTableBody.empty(); // Xoá nội dung cũ trước
 
-                    // Duyệt qua danh sách sản phẩm và thêm vào bảng
+                    // Duyệt qua mảng và append vào DOM
                     orderDetails.forEach((item) => {
-                        $orderItemsBody.append(`
+                        $orderTableBody.append(`
                             <tr>
                                 <td>${item.productId}</td>
                                 <td>${item.productName}</td>
@@ -210,11 +253,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
 
                     // Tính tổng tiền và cập nhật
-                    const totalAmount = orderDetails.reduce((total, item) => total + parseFloat(item.amount), 0);
-                    $("#total-amount").text(totalAmount.toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                    }));
+                    // const totalAmount = orderDetails.reduce((total, item) => total + parseFloat(item.amount), 0);
+                    // $("#total-amount").text(totalAmount.toLocaleString("vi-VN", {
+                    //     style: "currency",
+                    //     currency: "VND",
+                    // }));
 
                     // Hiển thị overlay
                     $(".overlay").addClass("active");

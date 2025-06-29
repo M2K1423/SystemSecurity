@@ -185,7 +185,7 @@
                             <th>Id</th>
                             <th>Tên KH</th>
                             <th>Ngày đặt hàng</th>
-                            <th>Ngày giao dự kiến</th>
+                            <th>Tổng tiền</th>
                             <th>Địa chỉ</th>
                             <th>Trạng thái</th>
                             <th>Chi tiết</th>
