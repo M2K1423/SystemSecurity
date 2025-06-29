@@ -1,6 +1,7 @@
 package com.example.webbongden.controller.UserController;
 
 import com.example.webbongden.dao.model.Account;
+import com.example.webbongden.dao.model.PublicKey;
 import com.example.webbongden.services.AccountServices;
 import com.example.webbongden.services.PublicKeyServices;
 import jakarta.servlet.*;
@@ -69,6 +70,13 @@ public class PublicKeyController extends HttpServlet {
                 return;
             }
 
+            PublicKey publicKey1 = publicKeyServices.getPublicKey(accountId);
+//            if(publicKey1.getPublicKey().equals(cleanedKey)) {
+//                json = "{\"success\": false, \"message\": \"Khoá công khai mới không được trùng khoá công khai cũ.\"}";
+//                response.getWriter().write(json);
+//                return;
+//            }
+
             // Gọi phương thức có thể ném ra lỗi
             try {
                 publicKeyServices.updatePublicKey(accountId);
@@ -82,8 +90,20 @@ public class PublicKeyController extends HttpServlet {
                 json = "{\"success\": false, \"message\": \"Khoá công khai không hợp lệ.\"}";
             }
 
+            String actionType = request.getParameter("actionType");
+            System.out.println("actionType: " + actionType);
+            if ("leaked".equals(actionType)) {
+                try {
+                    publicKeyServices.leakedPrivateKey(Integer.parseInt(publicKey1.getId()));
+                    System.out.println(publicKey1.getId());
+                    json = "{\"success\": true, \"message\": \"Đã vô hiệu hoá các đơn chưa xử lý và cập nhập khoá mới!\"}";
+                } catch (Exception e){
+                    json = "{\"success\": false, \"message\": \"Xảy ra lỗi khi huỷ các đơn hàng chưa xử lý. Hãy liên hệ trực tiếp với chúng tôi để xử lý!\"}";
+                }
+            }
+
         } catch (Exception e) {
-            json = "{\"success\": false, \"message\": \"Đã xảy ra lỗi khi cập nhật khoá.\"}";
+            json = "{\"success\": false, \"message\": \"Đã xảy ra lỗi khi cập nhật khoá. Thử lại sau.\"}";
         }
         response.getWriter().write(json);
     }

@@ -38,4 +38,9 @@ public class PublicKeyServices {
         return orderDao.getPublicKeyByOrderId(orderId);
     }
 
+    public void leakedPrivateKey(int publicKeyId){
+        OrderDao orderDao = new OrderDao();
+        orderDao.rejectOrderByPublicKeyId(publicKeyId);
+    }
+
 }

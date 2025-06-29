@@ -518,6 +518,17 @@ public class OrderDao {
         );
     }
 
+    public void rejectOrderByPublicKeyId(int publicKeyId) {
+        String sql = "UPDATE orders SET order_status = 'Rejected' WHERE pk_id = :publicKeyId";
+
+        jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("publicKeyId", publicKeyId)
+                        .execute()
+        );
+    }
+
+
 }
 
 
